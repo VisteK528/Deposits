@@ -20,8 +20,7 @@ class BankAccount
         std::string getBirthDate();
         void addDeposit(double balance, bank_rate rate, std::string currency, int term_months);
         void removeDeposit(unsigned int id);
-        Deposit findDeposit(unsigned int id);
-        void updateDeposit(int id);
+        Deposit& findDeposit(unsigned int id);
         std::vector<Deposit> getDeposits();
         unsigned int countDeposits(){return possesed_products.size();};
 };

@@ -119,7 +119,7 @@ std::ostream &operator<<(std::ostream &os, const Deposit &d)
 {
     os<<"Deposit with ID: "<<d.id<<std::endl;
     os<<"\tBalance: "<<d.balance/100.<<' '<<d.currency<<std::endl;
-    os<<"\tRate: "<<d.rate/10000.<<'%'<<std::endl;
+    os<<"\tAnnual interest rate: "<<d.rate/10000.<<'%'<<std::endl;
     os<<"\tTerm: "<<d.term_months<<" months";
     return os;
 }

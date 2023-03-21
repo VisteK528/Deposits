@@ -61,7 +61,7 @@ void BankAccount::addDeposit(double balance, bank_rate rate, std::string currenc
     possesed_products.push_back(Deposit(balance, rate, currency, term_months, index));
 }
 
-Deposit BankAccount::findDeposit(unsigned int id)
+Deposit& BankAccount::findDeposit(unsigned int id)
 {
     auto it = std::find_if(possesed_products.begin(), possesed_products.end(), [&id](Deposit &d){return d.getId() == id;});
     if(it != possesed_products.end())
