@@ -8,18 +8,22 @@
 class BankAccount
 {
     private:
+        unsigned int createUniqeIndex(const std::vector<Deposit> &d);
         std::string name;
         std::string surname;
         std::string birth_date;
         std::vector<Deposit> possesed_products;
     public:
         BankAccount(std::string name, std::string surname, std::string birth_date);
-        void addDeposit(double balance, double rate, std::string currency);
-        void removeDeposit(int id);
-        void findDeposit(int id);
-        void editDeposit(int id);
-        void showDeposits();
-        void countDeposits();
+        std::string getName();
+        std::string getSurname();
+        std::string getBirthDate();
+        void addDeposit(double balance, bank_rate rate, std::string currency, int term_months);
+        void removeDeposit(unsigned int id);
+        Deposit findDeposit(unsigned int id);
+        void updateDeposit(int id);
+        std::vector<Deposit> getDeposits();
+        unsigned int countDeposits(){return possesed_products.size();};
 };
 
 

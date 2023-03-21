@@ -42,4 +42,19 @@ class InvalidIdValueError: public BaseException
     public:
         InvalidIdValueError(const std::string &message): BaseException(message){};
 };
+// Deposit
+
+class ProductsInvalidIndexError: public BaseException
+{
+    public:
+        ProductsInvalidIndexError(const std::string &message): BaseException(message){};
+};
+
+// Main program
+
+class InvalidChoiceValue: public BaseException
+{
+    public:
+        InvalidChoiceValue(const std::string &message): BaseException(message){};
+};
 #endif

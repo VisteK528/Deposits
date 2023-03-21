@@ -1,6 +1,7 @@
 #ifndef DEPOSIT_HPP
 #define DEPOSIT_HPP
 
+#include <iostream>
 #include <string>
 #include "exceptions.hpp"
 #include <math.h>
@@ -41,6 +42,7 @@ class Deposit
         void setRate(bank_rate rate);
         void convert(std::string currency, bank_rate exchange_rate);
         double calculateProfit();
+        friend std::ostream& operator<<(std::ostream &os, const Deposit &d);
 
 };
 

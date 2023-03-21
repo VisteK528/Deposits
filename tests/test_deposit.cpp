@@ -138,7 +138,7 @@ TEST_CASE("Test converting the currency of the deposit", "[deposit]")
         REQUIRE(my_deposit.getCurrency() == "PLN");
         my_deposit.convert(exchange_currency, exchange_rate);
         REQUIRE(my_deposit.getBalance() == 585.19);
-        REQUIRE(my_deposit.getRate() == 0.26);
+        REQUIRE(my_deposit.getRate() == 1.14);
         REQUIRE(my_deposit.getCurrency() == exchange_currency);
     }
     SECTION("Test converting to GBP", "[deposit]")
@@ -150,7 +150,7 @@ TEST_CASE("Test converting the currency of the deposit", "[deposit]")
         REQUIRE(my_deposit.getCurrency() == "PLN");
         my_deposit.convert(exchange_currency, exchange_rate);
         REQUIRE(my_deposit.getBalance() == 476.62);
-        REQUIRE(my_deposit.getRate() == 0.21);
+        REQUIRE(my_deposit.getRate() == 1.14);
         REQUIRE(my_deposit.getCurrency() == exchange_currency);
     }
     SECTION("Test converting to EUR", "[deposit]")
@@ -162,7 +162,7 @@ TEST_CASE("Test converting the currency of the deposit", "[deposit]")
         REQUIRE(my_deposit.getCurrency() == "PLN");
         my_deposit.convert(exchange_currency, exchange_rate);
         REQUIRE(my_deposit.getBalance() == 546.6);
-        REQUIRE(my_deposit.getRate() == 0.24);
+        REQUIRE(my_deposit.getRate() == 1.14);
         REQUIRE(my_deposit.getCurrency() == exchange_currency);
     }
 }

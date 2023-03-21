@@ -6,3 +6,6 @@ compile:
 
 test_deposit:
 	${CXX} ${CXX_FLAGS} src/*.cpp tests/test_deposit.cpp -o build/test_deposit
+
+test_bank_account:
+	${CXX} ${CXX_FLAGS} src/*.cpp tests/test_bank_account.cpp -o build/test_bank_account

@@ -102,10 +102,6 @@ void Deposit::convert(std::string currency, bank_rate exchange_rate)
         // Converting Balance
         double float_balance = (balance/(exchange_rate*100))*100;
         this->balance = round(float_balance);
-
-        // Converting Rate
-        double float_rate = round(rate/(exchange_rate*100))/100;
-        setRate(float_rate);
     }
 }
 
@@ -116,4 +112,14 @@ double Deposit::calculateProfit()
     double double_profit = balance*lenth_factor*rate;
     integer_profit = (int)round(double_profit/1000000);
     return (double)integer_profit/100;
+}
+
+
+std::ostream &operator<<(std::ostream &os, const Deposit &d)
+{
+    os<<"Deposit with ID: "<<d.id<<std::endl;
+    os<<"\tBalance: "<<d.balance/100.<<' '<<d.currency<<std::endl;
+    os<<"\tRate: "<<d.rate/10000.<<'%'<<std::endl;
+    os<<"\tTerm: "<<d.term_months<<" months";
+    return os;
 }
