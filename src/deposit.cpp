@@ -16,27 +16,27 @@ Deposit::Deposit(double balance, bank_rate rate, std::string currency, int term_
     setId(id);
 }
 
-double Deposit::getBalance()
+double Deposit::getBalance() const
 {
     return (double)this->balance/100;
 }
 
-bank_rate Deposit::getRate()
+bank_rate Deposit::getRate() const
 {
     return this->rate/10000;
 }
 
-std::string Deposit::getCurrency()
+std::string Deposit::getCurrency() const
 {
     return this->currency;
 }
 
-unsigned int Deposit::getId()
+unsigned int Deposit::getId() const
 {
     return this->id;
 }
 
-unsigned int Deposit::getTerm()
+unsigned int Deposit::getTerm() const
 {
     return this->term_months;
 }
@@ -105,7 +105,7 @@ void Deposit::convert(std::string currency, bank_rate exchange_rate)
     }
 }
 
-double Deposit::calculateProfit()
+double Deposit::calculateProfit() const
 {
     unsigned int integer_profit = 0;
     double lenth_factor = term_months/12.;

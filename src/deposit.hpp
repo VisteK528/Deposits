@@ -34,14 +34,14 @@ class Deposit
     public:
         Deposit(){};
         Deposit(double balance, bank_rate rate, std::string currency, int term_months, int id);
-        unsigned int getId();
-        unsigned int getTerm();
-        double getBalance();
-        bank_rate getRate();
-        std::string getCurrency();
+        unsigned int getId() const;
+        unsigned int getTerm() const;
+        double getBalance() const;
+        bank_rate getRate() const;
+        std::string getCurrency() const;
         void setRate(bank_rate rate);
         void convert(std::string currency, bank_rate exchange_rate);
-        double calculateProfit();
+        double calculateProfit() const;
         friend std::ostream& operator<<(std::ostream &os, const Deposit &d);
 
 };

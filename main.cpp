@@ -89,11 +89,15 @@ int main(int argc, char* argv[])
         {
             std::cerr << e.what() << '\n';
             std::cerr <<"Please try again!"<<'\n';
+            wait_for_response();
+            system("clear");
             continue;
         }
         catch(const std::exception& e)
         {
             std::cerr<<"Choice value cannot be a character or string! Please try again!"<<std::endl;
+            wait_for_response();
+            system("clear");
             continue;
         }
 
@@ -198,7 +202,7 @@ int main(int argc, char* argv[])
             int id = getID();
             try
             {
-                Deposit& found_deposit = account.findDeposit(id);
+                const Deposit& found_deposit = account.findDeposit(id);
                 std::cout<<"Deposit to be modified: "<<std::endl;
                 std::cout<<found_deposit<<std::endl<<std::endl;
 
@@ -244,7 +248,7 @@ int main(int argc, char* argv[])
                         {
                             throw InvalidRateValueError("Rate value cannot be a string!");
                         }
-                        found_deposit.setRate(rate);
+                        account.setDepositRate(id, rate);
                         std::cout<<"Successfully changed the rate of the deposit"<<std::endl;
                     }
                     catch(const std::exception& e)
@@ -272,7 +276,7 @@ int main(int argc, char* argv[])
                         {
                             throw InvalidRateValueError("Exchange rate cannot be a string!");
                         }
-                        found_deposit.convert(currency_symbol, exchange_rate);
+                        account.convertDeposit(id, currency_symbol, exchange_rate);
                         std::cout<<"Successfully converted the deposit to "<<currency_symbol<<std::endl;
                     }
                     catch(const std::exception& e)

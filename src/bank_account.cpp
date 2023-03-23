@@ -7,17 +7,17 @@ BankAccount::BankAccount(std::string name, std::string surname, std::string birt
     this->birth_date = birth_date;
 }
 
-std::string BankAccount::getName()
+std::string BankAccount::getName() const
 {
     return this->name;
 }
 
-std::string BankAccount::getSurname()
+std::string BankAccount::getSurname() const
 {
     return this->surname;
 }
 
-std::string BankAccount::getBirthDate()
+std::string BankAccount::getBirthDate() const
 {
     return this->birth_date;
 }
@@ -61,7 +61,7 @@ void BankAccount::addDeposit(double balance, bank_rate rate, std::string currenc
     possesed_products.push_back(Deposit(balance, rate, currency, term_months, index));
 }
 
-Deposit& BankAccount::findDeposit(unsigned int id)
+Deposit& BankAccount::findDepositReference(unsigned int id)
 {
     auto it = std::find_if(possesed_products.begin(), possesed_products.end(), [&id](Deposit &d){return d.getId() == id;});
     if(it != possesed_products.end())
@@ -73,7 +73,12 @@ Deposit& BankAccount::findDeposit(unsigned int id)
     {
         throw ProductsInvalidIndexError("Program could not find a Deposit with given id number!");
     }
+}
 
+const Deposit& BankAccount::findDeposit(unsigned int id)
+{
+    const Deposit &d = findDepositReference(id);
+    return d;
 }
 
 void BankAccount::removeDeposit(unsigned int id)
@@ -87,4 +92,16 @@ void BankAccount::removeDeposit(unsigned int id)
     {
         throw ProductsInvalidIndexError("Program could not find a Deposit with given id number!");
     }
+}
+
+void BankAccount::setDepositRate(unsigned int id, bank_rate rate)
+{
+    Deposit &d = findDepositReference(id);
+    d.setRate(rate);
+}
+
+void BankAccount::convertDeposit(unsigned int id, std::string currency_symbol, bank_rate exchange_rate)
+{
+    Deposit &d = findDepositReference(id);
+    d.convert(currency_symbol, exchange_rate);
 }
