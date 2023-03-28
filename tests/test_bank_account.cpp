@@ -89,3 +89,64 @@ TEST_CASE("Remove deposits from bank account", "[bank_account]")
     }
 
 }
+
+
+TEST_CASE("Modify deposits", "[bank_account]")
+{
+    BankAccount account("Jan", "Kowalski", "01-01-2000");
+    account.addDeposit(972, 3.14, "PLN", 12);
+    account.addDeposit(1364, 2.71, "PLN", 6);
+    account.addDeposit(1410, 3.14, "EUR", 3);
+    account.addDeposit(1945, 3.14, "USD", 9);
+    SECTION("Convert deposit to other currency", "[bank_account]")
+    {
+        Deposit test_deposit = account.findDeposit(1);
+        REQUIRE(test_deposit.getBalance() == 972);
+        REQUIRE(test_deposit.getCurrency() == "PLN");
+        REQUIRE(test_deposit.getRate() == 3.14);
+        REQUIRE(test_deposit.getTerm() == 12);
+        account.convertDeposit(1, "EUR", 4.7);
+        Deposit converted_test_deposit = account.findDeposit(1);
+        REQUIRE(converted_test_deposit.getBalance() == 206.81);
+        REQUIRE(converted_test_deposit.getCurrency() == "EUR");
+        REQUIRE(converted_test_deposit.getRate() == 3.14);
+        REQUIRE(converted_test_deposit.getTerm() == 12);
+    }
+    SECTION("Convert deposit to other currency v2", "[bank_account]")
+    {
+        Deposit test_deposit = account.findDeposit(3);
+        REQUIRE(test_deposit.getBalance() == 1410);
+        REQUIRE(test_deposit.getCurrency() == "EUR");
+        REQUIRE(test_deposit.getRate() == 3.14);
+        REQUIRE(test_deposit.getTerm() == 3);
+        account.convertDeposit(3, "PLN", 1/4.7);
+        Deposit converted_test_deposit = account.findDeposit(3);
+        REQUIRE(converted_test_deposit.getBalance() == 6627);
+        REQUIRE(converted_test_deposit.getCurrency() == "PLN");
+        REQUIRE(converted_test_deposit.getRate() == 3.14);
+        REQUIRE(converted_test_deposit.getTerm() == 3);
+    }
+
+    SECTION("Change deposit annual interest rate", "[bank_account]")
+    {
+        Deposit test_deposit = account.findDeposit(3);
+        REQUIRE(test_deposit.getBalance() == 1410);
+        REQUIRE(test_deposit.getCurrency() == "EUR");
+        REQUIRE(test_deposit.getRate() == 3.14);
+        REQUIRE(test_deposit.getTerm() == 3);
+        account.setDepositRate(3, 2.71);
+        Deposit converted_test_deposit = account.findDeposit(3);
+        REQUIRE(converted_test_deposit.getBalance() == 1410);
+        REQUIRE(converted_test_deposit.getCurrency() == "EUR");
+        REQUIRE(converted_test_deposit.getRate() == 2.71);
+        REQUIRE(converted_test_deposit.getTerm() == 3);
+    }
+}
+
+TEST_CASE("Calculate profits after term", "[bank_account]")
+{
+    BankAccount account("Jan", "Kowalski", "01-01-2000");
+    account.addDeposit(972, 3.14, "PLN", 12);
+    Deposit test_deposit = account.findDeposit(1);
+    REQUIRE(test_deposit.calculateProfit() == 30.52);
+}

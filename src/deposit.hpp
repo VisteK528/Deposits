@@ -8,21 +8,9 @@
 
 typedef double bank_rate;
 
-class Date
-{
-    private:
-        unsigned int day;
-        unsigned int month;
-        unsigned int year;
-    public:
-        Date();
-        Date(std::string iso_date);
-};
-
 class Deposit
 {
     private:
-        unsigned int income_tax = 19;
         void setCurrency(std::string currency);
         void setTerm(int term_months);
         void setId(int id);
