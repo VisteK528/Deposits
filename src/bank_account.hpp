@@ -4,6 +4,7 @@
 #include <iostream>
 #include "deposit.hpp"
 #include <vector>
+#include <algorithm>
 
 class BankAccount
 {
