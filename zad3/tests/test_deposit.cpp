@@ -4,7 +4,7 @@
 
 TEST_CASE("Create deposit", "[deposit]")
 {
-    Deposit my_deposit(2569, 1.14, "PLN", 12, 1);
+    Deposit my_deposit(2569, 1.14, "PLN", 12, 1, 19);
     SECTION("Test getters", "[deposit]")
     {
         REQUIRE(my_deposit.getBalance() == 2569);
@@ -12,6 +12,7 @@ TEST_CASE("Create deposit", "[deposit]")
         REQUIRE(my_deposit.getRate() == 1.14);
         REQUIRE(my_deposit.getCurrency() == "PLN");
         REQUIRE(my_deposit.getTerm() == 12);
+        REQUIRE(my_deposit.getCapitalGainsTax() == 19);
     }
 
     SECTION("Test setters", "[deposit]")
@@ -26,33 +27,33 @@ TEST_CASE("Test calulcating profits 1", "[deposit]")
 {
     SECTION("Calculate profits with 3 month term", "[deposit]")
     {
-        Deposit my_deposit(2569, 1.14, "PLN", 3, 1);
-        REQUIRE(my_deposit.calculateProfit() == 7.32);
+        Deposit my_deposit(2569, 1.14, "PLN", 3, 1, 19);
+        REQUIRE(my_deposit.calculateProfit() == 5.93);
     }
     SECTION("Calculate profits with 6 month term", "[deposit]")
     {
-        Deposit my_deposit(2569, 1.14, "PLN", 6, 1);
-        REQUIRE(my_deposit.calculateProfit() == 14.64);
+        Deposit my_deposit(2569, 1.14, "PLN", 6, 1, 19);
+        REQUIRE(my_deposit.calculateProfit() == 11.86);
     }
     SECTION("Calculate profits with 9 month term", "[deposit]")
     {
-        Deposit my_deposit(2569, 1.14, "PLN", 9, 1);
-        REQUIRE(my_deposit.calculateProfit() == 21.96);
+        Deposit my_deposit(2569, 1.14, "PLN", 9, 1, 19);
+        REQUIRE(my_deposit.calculateProfit() == 17.79);
     }
     SECTION("Calculate profits with 12 month term", "[deposit]")
     {
-        Deposit my_deposit(2569, 1.14, "PLN", 12, 1);
-        REQUIRE(my_deposit.calculateProfit() == 29.29);
+        Deposit my_deposit(2569, 1.14, "PLN", 12, 1, 19);
+        REQUIRE(my_deposit.calculateProfit() == 23.72);
     }
     SECTION("Calculate profits with 15 month term", "[deposit]")
     {
-        Deposit my_deposit(2569, 1.14, "PLN", 15, 1);
-        REQUIRE(my_deposit.calculateProfit() == 36.61);
+        Deposit my_deposit(2569, 1.14, "PLN", 15, 1, 19);
+        REQUIRE(my_deposit.calculateProfit() == 29.65);
     }
     SECTION("Calculate profits with 18 month term", "[deposit]")
     {
-        Deposit my_deposit(2569, 1.14, "PLN", 18, 1);
-        REQUIRE(my_deposit.calculateProfit() == 43.93);
+        Deposit my_deposit(2569, 1.14, "PLN", 18, 1, 19);
+        REQUIRE(my_deposit.calculateProfit() == 35.58);
     }
 }
 
@@ -60,33 +61,33 @@ TEST_CASE("Test calulcating profits 2", "[deposit]")
 {
     SECTION("Calculate profits with 3 month term", "[deposit]")
     {
-        Deposit my_deposit(152678, 3.14, "PLN", 3, 1);
-        REQUIRE(my_deposit.calculateProfit() == 1198.52);
+        Deposit my_deposit(152678, 3.14, "PLN", 3, 1, 19);
+        REQUIRE(my_deposit.calculateProfit() == 970.80);
     }
     SECTION("Calculate profits with 6 month term", "[deposit]")
     {
-        Deposit my_deposit(152678, 3.14, "PLN", 6, 1);
-        REQUIRE(my_deposit.calculateProfit() == 2397.04);
+        Deposit my_deposit(152678, 3.14, "PLN", 6, 1, 19);
+        REQUIRE(my_deposit.calculateProfit() == 1941.61);
     }
     SECTION("Calculate profits with 9 month term", "[deposit]")
     {
-        Deposit my_deposit(152678, 3.14, "PLN", 9, 1);
-        REQUIRE(my_deposit.calculateProfit() == 3595.57);
+        Deposit my_deposit(152678, 3.14, "PLN", 9, 1, 19);
+        REQUIRE(my_deposit.calculateProfit() == 2912.41);
     }
     SECTION("Calculate profits with 12 month term", "[deposit]")
     {
-        Deposit my_deposit(152678, 3.14, "PLN", 12, 1);
-        REQUIRE(my_deposit.calculateProfit() == 4794.09);
+        Deposit my_deposit(152678, 3.14, "PLN", 12, 1, 19);
+        REQUIRE(my_deposit.calculateProfit() == 3883.21);
     }
     SECTION("Calculate profits with 15 month term", "[deposit]")
     {
-        Deposit my_deposit(152678, 3.14, "PLN", 15, 1);
-        REQUIRE(my_deposit.calculateProfit() == 5992.61);
+        Deposit my_deposit(152678, 3.14, "PLN", 15, 1, 19);
+        REQUIRE(my_deposit.calculateProfit() == 4854.02);
     }
     SECTION("Calculate profits with 18 month term", "[deposit]")
     {
-        Deposit my_deposit(152678, 3.14, "PLN", 18, 1);
-        REQUIRE(my_deposit.calculateProfit() == 7191.13);
+        Deposit my_deposit(152678, 3.14, "PLN", 18, 1, 19);
+        REQUIRE(my_deposit.calculateProfit() == 5824.82);
     }
 }
 
@@ -94,29 +95,29 @@ TEST_CASE("Create deposit with invalid values", "[deposit]")
 {
     SECTION("Create deposit with negative balance", "[deposit]")
     {
-        REQUIRE_THROWS(Deposit(-512, 3.14, "PLN", 12, 2));
+        REQUIRE_THROWS(Deposit(-512, 3.14, "PLN", 12, 2, 19));
     }
     SECTION("Create deposit with negative rate", "[deposit]")
     {
-        REQUIRE_THROWS(Deposit(512, -3.14, "PLN", 12, 2));
+        REQUIRE_THROWS(Deposit(512, -3.14, "PLN", 12, 2, 19));
     }
     SECTION("Create deposit with negative deposit term", "[deposit]")
     {
-        REQUIRE_THROWS(Deposit(512, 3.14, "PLN", -12, 2));
+        REQUIRE_THROWS(Deposit(512, 3.14, "PLN", -12, 2, 19));
     }
     SECTION("Create deposit with invalid currency symbol", "[deposit]")
     {
-        REQUIRE_THROWS(Deposit(512, 3.14, "PLNfewafa", 12, 2));
+        REQUIRE_THROWS(Deposit(512, 3.14, "PLNfewafa", 12, 2, 19));
     }
     SECTION("Create deposit with invalid id", "[deposit]")
     {
-        REQUIRE_THROWS(Deposit(512, 3.14, "PLN", 12, -2));
+        REQUIRE_THROWS(Deposit(512, 3.14, "PLN", 12, -2, 19));
     }
 }
 
 TEST_CASE("Test converting the currency of the deposit", "[deposit]")
 {
-    Deposit my_deposit(2569, 1.14, "PLN", 12, 1);
+    Deposit my_deposit(2569, 1.14, "PLN", 12, 1, 19);
     SECTION("Test converting to PLN", "[deposit]")
     {
         bank_rate exchange_rate = 1;

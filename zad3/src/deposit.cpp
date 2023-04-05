@@ -1,6 +1,6 @@
 #include "deposit.hpp"
 
-Deposit::Deposit(double balance, bank_rate rate, std::string currency, int term_months, int id)
+Deposit::Deposit(double balance, bank_rate rate, std::string currency, int term_months, int id, int capital_gains_tax)
 {
     if(balance < 0)
     {
@@ -14,6 +14,7 @@ Deposit::Deposit(double balance, bank_rate rate, std::string currency, int term_
     setRate(rate);
     setTerm(term_months);
     setId(id);
+    setCapitalGainsTax(capital_gains_tax);
 }
 
 double Deposit::getBalance() const
@@ -39,6 +40,11 @@ unsigned int Deposit::getId() const
 unsigned int Deposit::getTerm() const
 {
     return this->term_months;
+}
+
+unsigned int Deposit::getCapitalGainsTax() const
+{
+    return this->capital_gains_tax;
 }
 
 void Deposit::setRate(bank_rate rate)
@@ -89,6 +95,18 @@ void Deposit::setId(int id)
     }
 }
 
+void Deposit::setCapitalGainsTax(int capital_gains_tax)
+{
+    if(capital_gains_tax < 0)
+    {
+        throw InvalidCapitalGainsTaxValueError("Capital gains tax value has to be greater than 0!");
+    }
+    else
+    {
+        this->capital_gains_tax = capital_gains_tax;
+    }
+}
+
 void Deposit::convert(std::string currency, bank_rate exchange_rate)
 {
     if(this->currency != currency)
@@ -109,7 +127,8 @@ double Deposit::calculateProfit() const
 {
     unsigned int integer_profit = 0;
     double lenth_factor = term_months/12.;
-    double double_profit = balance*lenth_factor*rate;
+    double tax = (100-capital_gains_tax)/100.;
+    double double_profit = balance*lenth_factor*rate*tax;
     integer_profit = (int)round(double_profit/1000000);
     return (double)integer_profit/100;
 }

@@ -42,6 +42,12 @@ class InvalidIdValueError: public BaseException
     public:
         InvalidIdValueError(const std::string &message): BaseException(message){};
 };
+
+class InvalidCapitalGainsTaxValueError: public BaseException
+{
+    public:
+        InvalidCapitalGainsTaxValueError(const std::string &message): BaseException(message){};
+};
 // Deposit
 
 class ProductsInvalidIndexError: public BaseException

@@ -20,18 +20,18 @@ TEST_CASE("Adding deposits to bank account", "[bank_account]")
     BankAccount account("Jan", "Kowalski", "01-01-2000");
     SECTION("Add deposits and count them", "[bank_account]")
     {
-        account.addDeposit(972, 3.14, "PLN", 6);
-        account.addDeposit(1364, 2.71, "PLN", 6);
-        account.addDeposit(1410, 3.14, "EUR", 6);
-        account.addDeposit(1945, 3.14, "USD", 6);
+        account.addDeposit(972, 3.14, "PLN", 6, 19);
+        account.addDeposit(1364, 2.71, "PLN", 6, 19);
+        account.addDeposit(1410, 3.14, "EUR", 6, 19);
+        account.addDeposit(1945, 3.14, "USD", 6, 19);
         REQUIRE(account.countDeposits() == 4);
     }
     SECTION("Search for deposit", "[bank_account]")
     {
-        account.addDeposit(972, 3.14, "PLN", 12);
-        account.addDeposit(1364, 2.71, "PLN", 6);
-        account.addDeposit(1410, 3.14, "EUR", 3);
-        account.addDeposit(1945, 3.14, "USD", 9);
+        account.addDeposit(972, 3.14, "PLN", 12, 19);
+        account.addDeposit(1364, 2.71, "PLN", 6, 19);
+        account.addDeposit(1410, 3.14, "EUR", 3, 19);
+        account.addDeposit(1945, 3.14, "USD", 9, 19);
         Deposit test_deposit = account.findDeposit(3);
         REQUIRE(test_deposit.getId() == 3);
         REQUIRE(test_deposit.getBalance() == 1410);
@@ -41,14 +41,14 @@ TEST_CASE("Adding deposits to bank account", "[bank_account]")
     }
     SECTION("Add new deposit with id of removed deposit", "[bank_account]")
     {
-        account.addDeposit(972, 3.14, "PLN", 6);
-        account.addDeposit(1364, 2.71, "PLN", 6);
-        account.addDeposit(1410, 3.14, "EUR", 6);
-        account.addDeposit(1945, 3.14, "USD", 6);
+        account.addDeposit(972, 3.14, "PLN", 6, 19);
+        account.addDeposit(1364, 2.71, "PLN", 6, 19);
+        account.addDeposit(1410, 3.14, "EUR", 6, 19);
+        account.addDeposit(1945, 3.14, "USD", 6, 19);
         REQUIRE(account.countDeposits() == 4);
         account.removeDeposit(3);
         REQUIRE(account.countDeposits() == 3);
-        account.addDeposit(1989, 2.71, "CHF", 12);
+        account.addDeposit(1989, 2.71, "CHF", 12, 19);
         REQUIRE(account.countDeposits() == 4);
         Deposit test_deposit = account.findDeposit(3);
         REQUIRE(test_deposit.getId() == 3);
@@ -66,20 +66,20 @@ TEST_CASE("Remove deposits from bank account", "[bank_account]")
     BankAccount account("Jan", "Kowalski", "01-01-2000");
     SECTION("Add 4 deposits and then remove one of them", "[bank_account]")
     {
-        account.addDeposit(972, 3.14, "PLN", 6);
-        account.addDeposit(1364, 2.71, "PLN", 6);
-        account.addDeposit(1410, 3.14, "EUR", 6);
-        account.addDeposit(1945, 3.14, "USD", 6);
+        account.addDeposit(972, 3.14, "PLN", 6, 19);
+        account.addDeposit(1364, 2.71, "PLN", 6, 19);
+        account.addDeposit(1410, 3.14, "EUR", 6, 19);
+        account.addDeposit(1945, 3.14, "USD", 6, 19);
         REQUIRE(account.countDeposits() == 4);
         account.removeDeposit(4);
         REQUIRE(account.countDeposits() == 3);
     }
     SECTION("Remove all deposits", "[bank_account]")
     {
-        account.addDeposit(972, 3.14, "PLN", 12);
-        account.addDeposit(1364, 2.71, "PLN", 6);
-        account.addDeposit(1410, 3.14, "EUR", 3);
-        account.addDeposit(1945, 3.14, "USD", 9);
+        account.addDeposit(972, 3.14, "PLN", 12, 19);
+        account.addDeposit(1364, 2.71, "PLN", 6, 19);
+        account.addDeposit(1410, 3.14, "EUR", 3, 19);
+        account.addDeposit(1945, 3.14, "USD", 9, 19);
         REQUIRE(account.countDeposits() == 4);
         account.removeDeposit(1);
         account.removeDeposit(2);
@@ -94,10 +94,10 @@ TEST_CASE("Remove deposits from bank account", "[bank_account]")
 TEST_CASE("Modify deposits", "[bank_account]")
 {
     BankAccount account("Jan", "Kowalski", "01-01-2000");
-    account.addDeposit(972, 3.14, "PLN", 12);
-    account.addDeposit(1364, 2.71, "PLN", 6);
-    account.addDeposit(1410, 3.14, "EUR", 3);
-    account.addDeposit(1945, 3.14, "USD", 9);
+    account.addDeposit(972, 3.14, "PLN", 12, 19);
+    account.addDeposit(1364, 2.71, "PLN", 6, 19);
+    account.addDeposit(1410, 3.14, "EUR", 3, 19);
+    account.addDeposit(1945, 3.14, "USD", 9, 19);
     SECTION("Convert deposit to other currency", "[bank_account]")
     {
         Deposit test_deposit = account.findDeposit(1);
@@ -146,7 +146,7 @@ TEST_CASE("Modify deposits", "[bank_account]")
 TEST_CASE("Calculate profits after term", "[bank_account]")
 {
     BankAccount account("Jan", "Kowalski", "01-01-2000");
-    account.addDeposit(972, 3.14, "PLN", 12);
+    account.addDeposit(972, 3.14, "PLN", 12, 19);
     Deposit test_deposit = account.findDeposit(1);
-    REQUIRE(test_deposit.calculateProfit() == 30.52);
+    REQUIRE(test_deposit.calculateProfit() == 24.72);
 }

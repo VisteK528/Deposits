@@ -20,7 +20,7 @@ class BankAccount
         std::string getName() const;
         std::string getSurname() const;
         std::string getBirthDate() const;
-        void addDeposit(double balance, bank_rate rate, std::string currency, int term_months);
+        void addDeposit(double balance, bank_rate rate, std::string currency, int term_months, int capital_gains_tax);
         void removeDeposit(unsigned int id);
         void setDepositRate(unsigned int id, bank_rate rate);
         void convertDeposit(unsigned int id, std::string currency_symbol, bank_rate exchange_rate);

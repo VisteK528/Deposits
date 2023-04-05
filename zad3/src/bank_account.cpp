@@ -55,10 +55,10 @@ unsigned int BankAccount::createUniqeIndex(const std::vector<Deposit> &d)
     return index;
 }
 
-void BankAccount::addDeposit(double balance, bank_rate rate, std::string currency, int term_months)
+void BankAccount::addDeposit(double balance, bank_rate rate, std::string currency, int term_months, int capital_gains_tax)
 {
     unsigned int index = createUniqeIndex(possesed_products);
-    possesed_products.push_back(Deposit(balance, rate, currency, term_months, index));
+    possesed_products.push_back(Deposit(balance, rate, currency, term_months, index, capital_gains_tax));
 }
 
 Deposit& BankAccount::findDepositReference(unsigned int id)
