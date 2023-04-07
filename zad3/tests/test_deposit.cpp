@@ -167,3 +167,16 @@ TEST_CASE("Test converting the currency of the deposit", "[deposit]")
         REQUIRE(my_deposit.getCurrency() == exchange_currency);
     }
 }
+
+
+TEST_CASE("Test deposit equality", "[deposit]")
+{
+    Deposit first_deposit(2569, 1.14, "PLN", 12, 1, 19);
+    Deposit second_deposit(2569, 1.14, "PLN", 12, 2, 19);
+    Deposit third_deposit(2500, 1.14, "PLN", 12, 3, 19);
+    SECTION("Test equality of deposits' properties except for ID", "[deposit]")
+    {
+        REQUIRE(first_deposit == second_deposit);
+        REQUIRE_FALSE(first_deposit == third_deposit);
+    }
+}

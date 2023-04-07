@@ -38,14 +38,16 @@ int getID()
 
 int main(int argc, char* argv[])
 {
-    if(argc != 4)
+    if(argc != 5)
     {
-        std::cerr<<"Expected 4 arguments, but insted got "<<argc<<" arguments!"<<std::endl;
+        std::cerr<<"Expected 5 arguments, but insted got "<<argc<<" arguments!"<<std::endl;
         return 1;
     }
     std::string name;
     std::string surname;
     std::string birth_date;
+    std::string capital_gains_tax_string;
+    int capital_gains_tax = 0;
     std::stringstream stream;
     stream<<argv[1];
     stream>>name;
@@ -57,11 +59,24 @@ int main(int argc, char* argv[])
     stream<<argv[3];
     stream>>birth_date;
     stream.clear();
+    stream<<argv[4];
+    stream>>capital_gains_tax_string;
+    stream.clear();
+    try
+    {
+        capital_gains_tax = std::stoi(capital_gains_tax_string);
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr<<"Capital gains tax value cannot be a string!"<<std::endl;
+        return 1;
+    }
+
     BankAccount account(name, surname, birth_date);
-    account.addDeposit(972.71, 3.14, "PLN", 6);
-    account.addDeposit(1364.12, 2.71, "PLN", 6);
-    account.addDeposit(1410.43, 3.14, "EUR", 6);
-    account.addDeposit(1945.01, 3.14, "USD", 6);
+    account.addDeposit(972.71, 3.14, "PLN", 6, 19);
+    account.addDeposit(1364.12, 2.71, "PLN", 6, 19);
+    account.addDeposit(1410.43, 3.14, "EUR", 6, 19);
+    account.addDeposit(1945.01, 3.14, "USD", 6, 19);
     std::cout<<"Hello, "<< account.getName() <<' '<<account.getSurname()<<'!'<<std::endl;
     std::cout<<"Thank you for choosing PROI Financial Services©!"<<std::endl;
     while(true)
@@ -104,16 +119,7 @@ int main(int argc, char* argv[])
 
         if(choice == 1)
         {
-            std::cout<<"Owner's data"<<std::endl;
-            std::cout<<"\t1. Name: "<<account.getName()<<std::endl;
-            std::cout<<"\t2. Surname: "<<account.getSurname()<<std::endl;
-            std::cout<<"\t3. Birthdate: "<<account.getBirthDate()<<std::endl<<std::endl;
-            std::cout<<"Posessed products:"<<std::endl<<std::endl;
-            std::vector<Deposit> products = account.getDeposits();
-            for(auto product: products)
-            {
-                std::cout<<product<<std::endl;
-            }
+            std::cout<<account<<std::endl;
         }
         else if(choice == 2)
         {
@@ -175,7 +181,7 @@ int main(int argc, char* argv[])
                     throw InvalidTermValueError("Term value cannot be a string!");
                 }
 
-                account.addDeposit(balance, rate, currency, term);
+                account.addDeposit(balance, rate, currency, term, capital_gains_tax);
                 std::cout<<"Successfully added new deposit to your account!"<<std::endl;
             }
             catch(const std::exception& e)

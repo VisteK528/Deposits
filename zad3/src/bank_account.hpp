@@ -27,6 +27,8 @@ class BankAccount
         const Deposit& findDeposit(unsigned int id);
         std::vector<Deposit> getDeposits();
         unsigned int countDeposits(){return possesed_products.size();};
+        //Operator overloading
+        friend std::ostream& operator<<(std::ostream &os, const BankAccount &b);
 };
 
 

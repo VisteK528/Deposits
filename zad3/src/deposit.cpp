@@ -99,7 +99,11 @@ void Deposit::setCapitalGainsTax(int capital_gains_tax)
 {
     if(capital_gains_tax < 0)
     {
-        throw InvalidCapitalGainsTaxValueError("Capital gains tax value has to be greater than 0!");
+        throw InvalidCapitalGainsTaxValueError("Capital gains tax value has to be greater than 0%!");
+    }
+    else if(capital_gains_tax > 100)
+    {
+        throw InvalidCapitalGainsTaxValueError("Capital gains tax cannot be greater than 100%!");
     }
     else
     {
@@ -141,4 +145,16 @@ std::ostream &operator<<(std::ostream &os, const Deposit &d)
     os<<"\tAnnual interest rate: "<<d.rate/10000.<<'%'<<std::endl;
     os<<"\tTerm: "<<d.term_months<<" months";
     return os;
+}
+
+bool Deposit::operator==(const Deposit &d) const
+{
+    if(balance == d.balance && rate == d.rate && currency == d.currency && term_months == d.term_months && capital_gains_tax == d.capital_gains_tax) return true;
+    return false;
+}
+
+bool Deposit::operator!=(const Deposit &d) const
+{
+    if(!operator==(d)) return true;
+    return false;
 }

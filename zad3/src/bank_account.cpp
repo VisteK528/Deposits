@@ -105,3 +105,17 @@ void BankAccount::convertDeposit(unsigned int id, std::string currency_symbol, b
     Deposit &d = findDepositReference(id);
     d.convert(currency_symbol, exchange_rate);
 }
+
+std::ostream& operator<<(std::ostream &os, const BankAccount &b)
+{
+    std::cout<<"Owner's data"<<std::endl;
+    std::cout<<"\t1. Name: "<<b.name<<std::endl;
+    std::cout<<"\t2. Surname: "<<b.surname<<std::endl;
+    std::cout<<"\t3. Birthdate: "<<b.birth_date<<std::endl<<std::endl;
+    std::cout<<"Posessed products:"<<std::endl<<std::endl;
+    for(const Deposit &product: b.possesed_products)
+    {
+        std::cout<<product<<std::endl;
+    }
+    return os;
+}

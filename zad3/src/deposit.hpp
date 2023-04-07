@@ -35,6 +35,8 @@ class Deposit
         double calculateProfit() const;
         // Overloading operators
         friend std::ostream& operator<<(std::ostream &os, const Deposit &d);
+        bool operator==(const Deposit &d) const;
+        bool operator!=(const Deposit &d) const;
 
 };
 
