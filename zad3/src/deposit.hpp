@@ -5,6 +5,10 @@
 #include <string>
 #include "exceptions.hpp"
 #include <math.h>
+#include <fstream>
+#include <vector>
+#include <sstream>
+#include <algorithm>
 
 typedef double bank_rate;
 
@@ -33,10 +37,15 @@ class Deposit
         void setRate(bank_rate rate);
         void convert(std::string currency, bank_rate exchange_rate);
         double calculateProfit() const;
+
         // Overloading operators
         friend std::ostream& operator<<(std::ostream &os, const Deposit &d);
         bool operator==(const Deposit &d) const;
         bool operator!=(const Deposit &d) const;
+
+        // Reading and saving from file
+        Deposit(const std::istream &is);
+        friend void saveToFile(std::ostream &os, const Deposit &d);
 
 };
 

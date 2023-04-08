@@ -17,6 +17,39 @@ Deposit::Deposit(double balance, bank_rate rate, std::string currency, int term_
     setCapitalGainsTax(capital_gains_tax);
 }
 
+Deposit::Deposit(const std::istream &is)
+{
+    std::stringstream input;
+    input << is.rdbuf();
+    std::vector<std::string> arguments;
+    while (input.good())
+    {
+        std::string argument;
+        getline(input, argument, ',');
+        argument.erase(std::remove_if(argument.begin(), argument.end(), isspace), argument.end());
+        arguments.push_back(argument);
+    }
+    int id = std::stoi(arguments[0]);
+    double balance = std::stod(arguments[1]);
+    std::string currency = arguments[2];
+    bank_rate rate = std::stod(arguments[3]);
+    int term_months = std::stoi(arguments[4]);
+    int capital_gains_tax = std::stoi(arguments[5]);
+    if(balance < 0)
+    {
+        throw InvalidBalanceInputValueError("Balance value cannot be negative!");
+    }
+    else
+    {
+        this->balance = balance*100;
+    }
+    setCurrency(currency);
+    setRate(rate);
+    setTerm(term_months);
+    setId(id);
+    setCapitalGainsTax(capital_gains_tax);
+}
+
 double Deposit::getBalance() const
 {
     return (double)this->balance/100;
@@ -143,7 +176,8 @@ std::ostream &operator<<(std::ostream &os, const Deposit &d)
     os<<"Deposit with ID: "<<d.id<<std::endl;
     os<<"\tBalance: "<<d.balance/100.<<' '<<d.currency<<std::endl;
     os<<"\tAnnual interest rate: "<<d.rate/10000.<<'%'<<std::endl;
-    os<<"\tTerm: "<<d.term_months<<" months";
+    os<<"\tTerm: "<<d.term_months<<" months"<<std::endl;
+    os<<"\tCapital gains tax: "<<d.capital_gains_tax<<"%";
     return os;
 }
 
@@ -157,4 +191,14 @@ bool Deposit::operator!=(const Deposit &d) const
 {
     if(!operator==(d)) return true;
     return false;
+}
+
+void saveToFile(std::ostream &os, const Deposit &d)
+{
+    os << std::to_string(d.id) << ',';
+    os << std::to_string(d.getBalance()) << ',';
+    os << d.currency << ',';
+    os << std::to_string(d.getRate()) << ',';
+    os << std::to_string(d.term_months) << ',';
+    os << std::to_string(d.capital_gains_tax) << ',';
 }
