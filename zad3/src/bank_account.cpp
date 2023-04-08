@@ -4,7 +4,7 @@ BankAccount::BankAccount(std::string name, std::string surname, std::string birt
 {
     this->name = name;
     this->surname = surname;
-    this->birth_date = birth_date;
+    setBirthdate(birth_date);
 }
 
 std::string BankAccount::getName() const
@@ -17,9 +17,14 @@ std::string BankAccount::getSurname() const
     return this->surname;
 }
 
-std::string BankAccount::getBirthDate() const
+std::chrono::year_month_day BankAccount::getBirthDate() const
 {
-    return this->birth_date;
+    return this->birth_date.date();
+}
+
+std::string BankAccount::getBirthDateString() const
+{
+    return this->birth_date.getAsString();
 }
 
 std::vector<Deposit> BankAccount::getDeposits()
@@ -27,6 +32,23 @@ std::vector<Deposit> BankAccount::getDeposits()
     return this->possesed_products;
 
 
+}
+
+void BankAccount::setBirthdate(std::string birth_date_str)
+{
+    if(birth_date_str.length() != 10)
+    {
+        throw InvalidDateFormatError("According to ISO 8601 norm date should be expressed as YYYY-MM-DD, thus it should consist of 10 characters!");
+    }
+    else if(birth_date_str[4] != '-' || birth_date_str[7] != '-')
+    {
+        throw InvalidDateFormatError("Passed date format does not satisfy ISO 8601 norm! Date format should be YYYY-MM-DD");
+    }
+    std::chrono::year year(std::stoi(birth_date_str.substr(0, 4)));
+    std::chrono::month month(std::stoi(birth_date_str.substr(5, 6)));
+    std::chrono::day day(std::stoi(birth_date_str.substr(8, 9)));
+
+    this->birth_date = year_month_day(year, month, day);
 }
 
 unsigned int BankAccount::createUniqeIndex(const std::vector<Deposit> &d)
@@ -108,14 +130,14 @@ void BankAccount::convertDeposit(unsigned int id, std::string currency_symbol, b
 
 std::ostream& operator<<(std::ostream &os, const BankAccount &b)
 {
-    std::cout<<"Owner's data"<<std::endl;
-    std::cout<<"\t1. Name: "<<b.name<<std::endl;
-    std::cout<<"\t2. Surname: "<<b.surname<<std::endl;
-    std::cout<<"\t3. Birthdate: "<<b.birth_date<<std::endl<<std::endl;
-    std::cout<<"Posessed products:"<<std::endl<<std::endl;
+    os<<"Owner's data"<<std::endl;
+    os<<"\t1. Name: "<<b.name<<std::endl;
+    os<<"\t2. Surname: "<<b.surname<<std::endl;
+    os<<"\t3. Birthdate: "<<b.birth_date<<std::endl;
+    os<<"Posessed products:"<<std::endl<<std::endl;
     for(const Deposit &product: b.possesed_products)
     {
-        std::cout<<product<<std::endl;
+        os<<product<<std::endl;
     }
     return os;
 }

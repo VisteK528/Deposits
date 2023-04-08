@@ -3,8 +3,10 @@
 
 #include <iostream>
 #include "deposit.hpp"
+#include "date.hpp"
 #include <vector>
 #include <algorithm>
+#include <chrono>
 
 class BankAccount
 {
@@ -13,13 +15,17 @@ class BankAccount
         Deposit& findDepositReference(unsigned int id);
         std::string name;
         std::string surname;
-        std::string birth_date;
         std::vector<Deposit> possesed_products;
+
+        // Birthdate
+        void setBirthdate(std::string birth_date_str);
+        year_month_day birth_date;
     public:
         BankAccount(std::string name, std::string surname, std::string birth_date);
         std::string getName() const;
         std::string getSurname() const;
-        std::string getBirthDate() const;
+        std::chrono::year_month_day getBirthDate() const;
+        std::string getBirthDateString() const;
         void addDeposit(double balance, bank_rate rate, std::string currency, int term_months, int capital_gains_tax);
         void removeDeposit(unsigned int id);
         void setDepositRate(unsigned int id, bank_rate rate);
@@ -27,6 +33,7 @@ class BankAccount
         const Deposit& findDeposit(unsigned int id);
         std::vector<Deposit> getDeposits();
         unsigned int countDeposits(){return possesed_products.size();};
+
         //Operator overloading
         friend std::ostream& operator<<(std::ostream &os, const BankAccount &b);
 };

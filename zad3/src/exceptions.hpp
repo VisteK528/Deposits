@@ -56,6 +56,15 @@ class ProductsInvalidIndexError: public BaseException
         ProductsInvalidIndexError(const std::string &message): BaseException(message){};
 };
 
+
+// BankAccount
+
+class InvalidDateFormatError: public BaseException
+{
+    public:
+        InvalidDateFormatError(const std::string &message): BaseException(message){};
+};
+
 // Main program
 
 class InvalidChoiceValue: public BaseException
