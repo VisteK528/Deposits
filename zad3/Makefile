@@ -12,3 +12,6 @@ test_bank_account:
 
 test_copy:
 	${CXX} ${CXX_FLAGS} src/*.cpp copy.cpp -o build/copy
+
+clean:
+	rm build/*

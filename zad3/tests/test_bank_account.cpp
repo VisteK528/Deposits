@@ -6,18 +6,18 @@
 
 TEST_CASE("Create a bank account", "[bank_account]")
 {
-    BankAccount account("Jan", "Kowalski", "01-01-2000");
+    BankAccount account("Jan", "Kowalski", "2000-01-01");
     SECTION("Test getters", "[bank_account]")
     {
         REQUIRE(account.getName() == "Jan");
         REQUIRE(account.getSurname() == "Kowalski");
-        REQUIRE(account.getBirthDate() == "01-01-2000");
+        REQUIRE(account.getBirthDateString() == "2000-01-01");
     }
 }
 
 TEST_CASE("Adding deposits to bank account", "[bank_account]")
 {
-    BankAccount account("Jan", "Kowalski", "01-01-2000");
+    BankAccount account("Jan", "Kowalski", "2000-01-01");
     SECTION("Add deposits and count them", "[bank_account]")
     {
         account.addDeposit(972, 3.14, "PLN", 6, 19);
@@ -63,7 +63,7 @@ TEST_CASE("Adding deposits to bank account", "[bank_account]")
 
 TEST_CASE("Remove deposits from bank account", "[bank_account]")
 {
-    BankAccount account("Jan", "Kowalski", "01-01-2000");
+    BankAccount account("Jan", "Kowalski", "2000-01-01");
     SECTION("Add 4 deposits and then remove one of them", "[bank_account]")
     {
         account.addDeposit(972, 3.14, "PLN", 6, 19);
@@ -93,7 +93,7 @@ TEST_CASE("Remove deposits from bank account", "[bank_account]")
 
 TEST_CASE("Modify deposits", "[bank_account]")
 {
-    BankAccount account("Jan", "Kowalski", "01-01-2000");
+    BankAccount account("Jan", "Kowalski", "2000-01-01");
     account.addDeposit(972, 3.14, "PLN", 12, 19);
     account.addDeposit(1364, 2.71, "PLN", 6, 19);
     account.addDeposit(1410, 3.14, "EUR", 3, 19);
@@ -145,7 +145,7 @@ TEST_CASE("Modify deposits", "[bank_account]")
 
 TEST_CASE("Calculate profits after term", "[bank_account]")
 {
-    BankAccount account("Jan", "Kowalski", "01-01-2000");
+    BankAccount account("Jan", "Kowalski", "2000-01-01");
     account.addDeposit(972, 3.14, "PLN", 12, 19);
     Deposit test_deposit = account.findDeposit(1);
     REQUIRE(test_deposit.calculateProfit() == 24.72);
