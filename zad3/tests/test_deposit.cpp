@@ -11,7 +11,7 @@ TEST_CASE("Create deposit", "[deposit]")
         REQUIRE(my_deposit.getId() == 1);
         REQUIRE(my_deposit.getRate() == 1.14);
         REQUIRE(my_deposit.getCurrency() == "PLN");
-        REQUIRE(my_deposit.getTerm() == 12);
+        REQUIRE(my_deposit.getTermUnsignedInt() == 12);
         REQUIRE(my_deposit.getCapitalGainsTax() == 19);
     }
 
@@ -179,4 +179,29 @@ TEST_CASE("Test deposit equality", "[deposit]")
         REQUIRE(first_deposit == second_deposit);
         REQUIRE_FALSE(first_deposit == third_deposit);
     }
+}
+
+
+TEST_CASE("Test creating deposit from stream", "[deposit]")
+{
+    std::string line = "1,972.56,PLN,3.14,6,19,";
+    std::stringstream stream(line);
+    Deposit my_deposit(stream);
+
+    REQUIRE(my_deposit.getBalance() == 972.56);
+    REQUIRE(my_deposit.getId() == 1);
+    REQUIRE(my_deposit.getRate() == 3.14);
+    REQUIRE(my_deposit.getCurrency() == "PLN");
+    REQUIRE(my_deposit.getTermUnsignedInt() == 6);
+    REQUIRE(my_deposit.getCapitalGainsTax() == 19);
+
+}
+
+TEST_CASE("Test saving Deposit to stream", "[deposit]")
+{
+    std::stringstream stream;
+    Deposit my_deposit(2569, 1.14, "PLN", 12, 1, 19);
+    saveToFile(stream, my_deposit);
+    REQUIRE(stream.str() == "1,2569.000000,PLN,1.140000,12,19,");
+
 }

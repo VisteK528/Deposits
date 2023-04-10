@@ -27,7 +27,7 @@ std::string BankAccount::getBirthDateString() const
     return this->birth_date.getAsString();
 }
 
-std::vector<Deposit> BankAccount::getDeposits()
+std::vector<Deposit> BankAccount::getDeposits() const
 {
     return this->possesed_products;
 

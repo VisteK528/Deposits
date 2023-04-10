@@ -9,6 +9,7 @@
 #include <vector>
 #include <sstream>
 #include <algorithm>
+#include <chrono>
 
 typedef double bank_rate;
 
@@ -23,13 +24,14 @@ class Deposit
         unsigned int balance;
         unsigned int capital_gains_tax;
         std::string currency;
-        unsigned int term_months;
+        std::chrono::months term_months;
         bank_rate rate;
     public:
         Deposit(){};
         Deposit(double balance, bank_rate rate, std::string currency, int term_months, int id, int capital_gains_tax);
         unsigned int getId() const;
-        unsigned int getTerm() const;
+        std::chrono::months getTerm() const;
+        unsigned int getTermUnsignedInt() const;
         unsigned int getCapitalGainsTax() const;
         double getBalance() const;
         bank_rate getRate() const;

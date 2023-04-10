@@ -31,8 +31,8 @@ class BankAccount
         void setDepositRate(unsigned int id, bank_rate rate);
         void convertDeposit(unsigned int id, std::string currency_symbol, bank_rate exchange_rate);
         const Deposit& findDeposit(unsigned int id);
-        std::vector<Deposit> getDeposits();
-        unsigned int countDeposits(){return possesed_products.size();};
+        std::vector<Deposit> getDeposits() const;
+        unsigned int countDeposits()const{return possesed_products.size();};
 
         //Operator overloading
         friend std::ostream& operator<<(std::ostream &os, const BankAccount &b);

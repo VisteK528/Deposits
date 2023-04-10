@@ -311,7 +311,7 @@ int main(int argc, char* argv[])
                 Deposit found_deposit = account.findDeposit(id);
                 std::cout<<"Properties of the deposit with ID: "<<id<<std::endl;
                 std::cout<<found_deposit<<std::endl;
-                std::cout<<"Expected profits after "<<found_deposit.getTerm()<<" months: ";
+                std::cout<<"Expected profits after "<<found_deposit.getTermUnsignedInt()<<" months: ";
                 std::cout<<found_deposit.calculateProfit()<<' '<<found_deposit.getCurrency()<<std::endl;
             }
             catch(const ProductsInvalidIndexError& e)

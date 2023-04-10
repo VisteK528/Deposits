@@ -70,9 +70,14 @@ unsigned int Deposit::getId() const
     return this->id;
 }
 
-unsigned int Deposit::getTerm() const
+std::chrono::months Deposit::getTerm() const
 {
     return this->term_months;
+}
+
+unsigned int Deposit::getTermUnsignedInt() const
+{
+    return this->term_months.count();
 }
 
 unsigned int Deposit::getCapitalGainsTax() const
@@ -112,7 +117,7 @@ void Deposit::setTerm(int term_months)
     }
     else
     {
-        this->term_months = term_months;
+        this->term_months = std::chrono::months(term_months);
     }
 }
 
@@ -163,7 +168,7 @@ void Deposit::convert(std::string currency, bank_rate exchange_rate)
 double Deposit::calculateProfit() const
 {
     unsigned int integer_profit = 0;
-    double lenth_factor = term_months/12.;
+    double lenth_factor = term_months.count()/12.;
     double tax = (100-capital_gains_tax)/100.;
     double double_profit = balance*lenth_factor*rate*tax;
     integer_profit = (int)round(double_profit/1000000);
@@ -176,7 +181,7 @@ std::ostream &operator<<(std::ostream &os, const Deposit &d)
     os<<"Deposit with ID: "<<d.id<<std::endl;
     os<<"\tBalance: "<<d.balance/100.<<' '<<d.currency<<std::endl;
     os<<"\tAnnual interest rate: "<<d.rate/10000.<<'%'<<std::endl;
-    os<<"\tTerm: "<<d.term_months<<" months"<<std::endl;
+    os<<"\tTerm: "<<d.term_months.count()<<" months"<<std::endl;
     os<<"\tCapital gains tax: "<<d.capital_gains_tax<<"%";
     return os;
 }
@@ -199,6 +204,6 @@ void saveToFile(std::ostream &os, const Deposit &d)
     os << std::to_string(d.getBalance()) << ',';
     os << d.currency << ',';
     os << std::to_string(d.getRate()) << ',';
-    os << std::to_string(d.term_months) << ',';
+    os << std::to_string(d.term_months.count()) << ',';
     os << std::to_string(d.capital_gains_tax) << ',';
 }

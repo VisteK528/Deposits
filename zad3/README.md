@@ -23,5 +23,7 @@
     - Zdecydowałem się na stworzenie oddzielnej klasy, ponieważ orginalna klasa ```year_month_date``` z biblioteki ```std::chrono``` nie wspiera w obecnej chwili operatora ```operator<<```, a także nie jest możliwa w łatwy sposób konwersja tego typu na obiekt klasy ```std::string```. Możliwość łatwego wyprowadznia zawartości obiektu klasy ```year_month_date``` jest określona jako wspierana od standardu ```since c++20```, aczkolwiek zakładam, że w rzeczywistości stanie się to częścią biblioteki standardowej wraz ze standardem c++23. W moich plikach biblioteki ```std::chrono``` operatory ```operator<<``` oraz metody ```to_stream```, ```from_stream``` są określone w pliku jako "//TODO"
     - Moja klasa year_month_date enkapsuluje obiekt klasy ```year_month_date```, wspiera konwersję do obiektu ```std::string``` oraz posiada przeciążenie operatora ```operator<<```
 9. Dodano nowe wyjątki obsługujące zmiany w programie
+10. Dodano nowe testy jednostkowe sprawdzajace zmiany wprowadzone w programie
+11. Zmieniono typ ```term_months``` z ```unsigned int``` na ```std::chrono::months```
 
 
