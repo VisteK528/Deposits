@@ -73,10 +73,16 @@ int main(int argc, char* argv[])
     }
 
     BankAccount account(name, surname, birth_date);
-    account.addDeposit(972.71, 3.14, "PLN", 6, 19);
+    TraditionalDeposit deposit(972.71, 3.14, "PLN", 6, 1, 19);
+    CurrencyDeposit currency(1410.43, 3.14, "EUR", 6, 2, 19);
+
+
+    account.addDeposit(deposit);
+    account.addDeposit(currency);
     account.addDeposit(1364.12, 2.71, "PLN", 6, 19);
-    account.addDeposit(1410.43, 3.14, "EUR", 6, 19);
-    account.addDeposit(1945.01, 3.14, "USD", 6, 19);
+    account.addDeposit(1410.43, 3.14, "PLN", 6, 19);
+    account.addDeposit(1945.01, 3.14, "PLN", 6, 19);
+
     std::cout<<"Hello, "<< account.getName() <<' '<<account.getSurname()<<'!'<<std::endl;
     std::cout<<"Thank you for choosing PROI Financial Services©!"<<std::endl;
     while(true)
@@ -311,7 +317,7 @@ int main(int argc, char* argv[])
                 Deposit found_deposit = account.findDeposit(id);
                 std::cout<<"Properties of the deposit with ID: "<<id<<std::endl;
                 std::cout<<found_deposit<<std::endl;
-                std::cout<<"Expected profits after "<<found_deposit.getTermUnsignedInt()<<" months: ";
+                std::cout<<"Expected profits after "<<found_deposit.getTerm()<<" months: ";
                 std::cout<<found_deposit.calculateProfit()<<' '<<found_deposit.getCurrency()<<std::endl;
             }
             catch(const ProductsInvalidIndexError& e)

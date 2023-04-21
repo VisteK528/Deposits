@@ -27,7 +27,7 @@ std::string BankAccount::getBirthDateString() const
     return this->birth_date.getAsString();
 }
 
-std::vector<Deposit> BankAccount::getDeposits() const
+std::vector<std::shared_ptr<Deposit>> BankAccount::getDeposits() const
 {
     return this->possesed_products;
 
@@ -51,13 +51,13 @@ void BankAccount::setBirthdate(std::string birth_date_str)
     this->birth_date = year_month_day(year, month, day);
 }
 
-unsigned int BankAccount::createUniqeIndex(const std::vector<Deposit> &d)
+unsigned int BankAccount::createUniqeIndex(const std::vector<std::shared_ptr<Deposit>> &d)
 {
     std::vector<unsigned int> indexes;
     indexes.reserve(possesed_products.size());
-    for(auto x: possesed_products)
+    for(auto const &x: possesed_products)
     {
-        indexes.push_back(x.getId());
+        indexes.push_back(x->getId());
     }
     struct
     {
@@ -80,16 +80,16 @@ unsigned int BankAccount::createUniqeIndex(const std::vector<Deposit> &d)
 void BankAccount::addDeposit(double balance, bank_rate rate, std::string currency, int term_months, int capital_gains_tax)
 {
     unsigned int index = createUniqeIndex(possesed_products);
-    possesed_products.push_back(Deposit(balance, rate, currency, term_months, index, capital_gains_tax));
+    possesed_products.push_back(std::make_shared<TraditionalDeposit>(balance, rate, currency, term_months, index, capital_gains_tax));
 }
 
 Deposit& BankAccount::findDepositReference(unsigned int id)
 {
-    auto it = std::find_if(possesed_products.begin(), possesed_products.end(), [&id](Deposit &d){return d.getId() == id;});
+    auto it = std::find_if(possesed_products.begin(), possesed_products.end(), [&](const std::shared_ptr<Deposit> d){return d->getId() == id;});
     if(it != possesed_products.end())
     {
         int index = std::distance(possesed_products.begin(), it);
-        return possesed_products[index];
+        return *possesed_products[index];
     }
     else
     {
@@ -105,7 +105,7 @@ const Deposit& BankAccount::findDeposit(unsigned int id)
 
 void BankAccount::removeDeposit(unsigned int id)
 {
-    auto it = std::find_if(possesed_products.begin(), possesed_products.end(), [&id](Deposit &d){return d.getId() == id;});
+    auto it = std::find_if(possesed_products.begin(), possesed_products.end(), [&](const std::shared_ptr<Deposit> d){return d->getId() == id;});
     if(it != possesed_products.end())
     {
         possesed_products.erase(it);
@@ -124,8 +124,8 @@ void BankAccount::setDepositRate(unsigned int id, bank_rate rate)
 
 void BankAccount::convertDeposit(unsigned int id, std::string currency_symbol, bank_rate exchange_rate)
 {
-    Deposit &d = findDepositReference(id);
-    d.convert(currency_symbol, exchange_rate);
+    //Deposit &d = findDepositReference(id);
+    //d->convert(currency_symbol, exchange_rate);
 }
 
 std::ostream& operator<<(std::ostream &os, const BankAccount &b)
@@ -135,9 +135,10 @@ std::ostream& operator<<(std::ostream &os, const BankAccount &b)
     os<<"\t2. Surname: "<<b.surname<<std::endl;
     os<<"\t3. Birthdate: "<<b.birth_date<<std::endl;
     os<<"Posessed products:"<<std::endl<<std::endl;
-    for(const Deposit &product: b.possesed_products)
+    for(auto const &i : b.possesed_products)
     {
-        os<<product<<std::endl;
+        os<<*i<<std::endl;
+        os<<i->getProductType()<<std::endl;
     }
     return os;
 }

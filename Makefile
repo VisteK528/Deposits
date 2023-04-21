@@ -1,5 +1,5 @@
 CXX = g++
-CXX_FLAGS = -Wall -std=c++20
+CXX_FLAGS = -Wall -Werror -std=c++20
 
 compile:
 	${CXX} ${CXX_FLAGS} src/*.cpp main.cpp -o build/main
