@@ -85,4 +85,10 @@ class InvalidChoiceValue: public BaseException
     public:
         InvalidChoiceValue(const std::string &message): BaseException(message){};
 };
+
+class InvalidRateCoefficientValueError: public BaseException
+{
+    public:
+        InvalidRateCoefficientValueError(const std::string &message): BaseException(message){};
+};
 #endif

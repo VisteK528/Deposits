@@ -73,6 +73,8 @@ int main(int argc, char* argv[])
     }
 
     BankAccount account(name, surname, birth_date);
+    DepositFactory factory;
+
     TraditionalDeposit deposit(972.71, 3.14, "PLN", 6, 1, 19);
     CurrencyDeposit currency(1410.43, 3.14, "EUR", 6, 2, 19);
 
@@ -143,15 +145,41 @@ int main(int argc, char* argv[])
         }
         else if(choice == 3)
         {
-            double balance;
-            int term;
-            double rate;
-            std::string balance_string;
-            std::string term_string;
-            std::string rate_string;
+            int choice;
+            std::cout<<"List of available deposit types: "<<std::endl;
+            std::cout<<"1. Traditional Deposit"<<std::endl;
+            std::cout<<"2. Currency Deposit"<<std::endl;
+            std::cout<<"3. Additive Deposit"<<std::endl;
+            std::cout<<"4. Progressive Deposit"<<std::endl;
+            std::cout<<"5. ShorTerm Deposit"<<std::endl;
+            std::cout<<"Your choice: ";
             try
             {
+                std::string string_choice;
+                std::cin>>string_choice;
+                choice = std::stoi(string_choice);
+                if(choice < 1 || choice > 5)
+                {
+                    throw InvalidChoiceValue("Choice value has to be number from 1 to 5!");
+                }
+            }
+            catch(const InvalidChoiceValue &e)
+            {
+                std::cerr<<e.what()<<'\n';
+            }
+            catch(const std::exception& e)
+            {
+                std::cerr<<"Choice value cannot be a character or string! Please try again!"<<std::endl;
+            }
+            std::cout<<"\n\n";
+
+            try
+            {
+                int index = account.getUniqueIndex();
+                double balance;
                 std::string currency;
+                std::string balance_string;
+
                 std::cout<<"Please, type the amount you want to locate on the deposit: ";
                 std::cin>>balance_string;
                 try
@@ -165,34 +193,119 @@ int main(int argc, char* argv[])
 
                 std::cout<<"Please, type the currency of the deposit: ";
                 std::cin>>currency;
-                std::cout<<"Please, type the rate of the deposit: ";
-                std::cin>>rate_string;
-                try
-                {
-                    rate = std::stod(rate_string);
-                }
-                catch(const std::exception& e)
-                {
-                    throw InvalidRateValueError("Rate value cannot be a string!");
-                }
 
-                std::cout<<"Please, type the term of the deposit in months: ";
-                std::cin>>term_string;
-                try
+                if(choice == DEPOSITS::TRADITIONAL || choice == DEPOSITS::CURRENCY || choice == DEPOSITS::ADDITIVE)
                 {
-                    term = std::stoi(term_string);
-                }
-                catch(const std::exception& e)
-                {
-                    throw InvalidTermValueError("Term value cannot be a string!");
-                }
+                    int term;
+                    double rate;
+                    std::string term_string;
+                    std::string rate_string;
 
-                account.addDeposit(balance, rate, currency, term, capital_gains_tax);
-                std::cout<<"Successfully added new deposit to your account!"<<std::endl;
+                    std::cout<<"Please, type the rate of the deposit: ";
+                    std::cin>>rate_string;
+                    try
+                    {
+                        rate = std::stod(rate_string);
+                    }
+                    catch(const std::exception& e)
+                    {
+                        throw InvalidRateValueError("Rate value cannot be a string!");
+                    }
+
+                    std::cout<<"Please, type the term of the deposit in months: ";
+                    std::cin>>term_string;
+                    try
+                    {
+                        term = std::stoi(term_string);
+                    }
+                    catch(const std::exception& e)
+                    {
+                        throw InvalidTermValueError("Term value cannot be a string!");
+                    }
+                    switch (choice)
+                    {
+                    case DEPOSITS::TRADITIONAL:
+                        account.addDeposit(factory.createTraditionalDeposit(DEPOSITS::TRADITIONAL, balance, rate, currency, term, index, capital_gains_tax));
+                        break;
+                    case DEPOSITS::CURRENCY:
+                        account.addDeposit(factory.createTraditionalDeposit(DEPOSITS::CURRENCY, balance, rate, currency, term, index, capital_gains_tax));
+                        break;
+                    case DEPOSITS::ADDITIVE:
+                        account.addDeposit(factory.createTraditionalDeposit(DEPOSITS::ADDITIVE, balance, rate, currency, term, index, capital_gains_tax));
+                        break;
+                    }
+                }
+                else if(choice == DEPOSITS::PROGRESSIVE)
+                {
+                    std::vector<bank_rate> rate_coefficients;
+                    int term;
+                    std::string term_string;
+                    std::cout<<"Please, type the term of the deposit in months: ";
+                    std::cin>>term_string;
+                    try
+                    {
+                        term = std::stoi(term_string);
+                    }
+                    catch(const std::exception& e)
+                    {
+                        throw InvalidTermValueError("Term value cannot be a string!");
+                    }
+                    try
+                    {
+                        std::string coefficient_str;
+                        bank_rate coefficient;
+                        rate_coefficients.reserve(term);
+                        for(int i=0; i<term; i++)
+                        {
+                            std::cout<<"Please type "<<i+1<<" rate coefficient: ";
+                            std::cin>>coefficient_str;
+                            coefficient = std::stod(coefficient_str);
+                            if(coefficient < 0)
+                            {
+                                throw InvalidRateCoefficientValueError("Rate coefficient has to be number greater than 0!");
+                            }
+                            rate_coefficients[i] = coefficient;
+                        }
+                    }
+                    catch(const std::exception& e)
+                    {
+                        std::cerr << e.what() << '\n';
+                    }
+                    account.addDeposit(factory.createProgressiveDeposit(balance, rate_coefficients, currency, term, index, capital_gains_tax));
+                }
+                else if(choice == DEPOSITS::SHORTTERM)
+                {
+                    int term;
+                    double rate;
+                    std::string term_string;
+                    std::string rate_string;
+
+                    std::cout<<"Please, type the rate of the deposit: ";
+                    std::cin>>rate_string;
+                    try
+                    {
+                        rate = std::stod(rate_string);
+                    }
+                    catch(const std::exception& e)
+                    {
+                        throw InvalidRateValueError("Rate value cannot be a string!");
+                    }
+
+                    std::cout<<"Please, type the term of the deposit in hours: ";
+                    std::cin>>term_string;
+                    try
+                    {
+                        term = std::stoi(term_string);
+                    }
+                    catch(const std::exception& e)
+                    {
+                        throw InvalidTermValueError("Term value cannot be a string!");
+                    }
+                    account.addDeposit(factory.createShortTimeDeposit(balance, rate, currency, term, index));
+                }
             }
             catch(const std::exception& e)
             {
-                std::cerr<<"Failed to create a deposit due to en error: "<< '\n';
                 std::cerr << e.what() << '\n';
             }
         }

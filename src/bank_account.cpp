@@ -51,7 +51,7 @@ void BankAccount::setBirthdate(std::string birth_date_str)
     this->birth_date = year_month_day(year, month, day);
 }
 
-unsigned int BankAccount::createUniqeIndex(const std::vector<std::shared_ptr<Deposit>> &d)
+unsigned int BankAccount::getUniqueIndex()
 {
     std::vector<unsigned int> indexes;
     indexes.reserve(possesed_products.size());
@@ -79,7 +79,7 @@ unsigned int BankAccount::createUniqeIndex(const std::vector<std::shared_ptr<Dep
 
 void BankAccount::addDeposit(double balance, bank_rate rate, std::string currency, int term_months, int capital_gains_tax)
 {
-    unsigned int index = createUniqeIndex(possesed_products);
+    unsigned int index = getUniqueIndex();
     //possesed_products.push_back(std::make_shared<TraditionalDeposit>(balance, rate, currency, term_months, index, capital_gains_tax));
     possesed_products.push_back(factory->createTraditionalDeposit(TRADITIONAL, balance, rate, currency, term_months, index, capital_gains_tax));
 }

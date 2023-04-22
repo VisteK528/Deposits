@@ -20,7 +20,6 @@ aby nastepnie moc dodac je jako elementy kolekcji std::vector przechowującej ws
 class BankAccount
 {
     private:
-        unsigned int createUniqeIndex(const std::vector<std::shared_ptr<Deposit>> &d);
         Deposit& findDepositReference(unsigned int id);
         std::shared_ptr<Deposit> findDepositPointer(unsigned int id);
         std::string name;
@@ -44,12 +43,18 @@ class BankAccount
         {
             possesed_products.push_back(std::make_shared<T>(t));
         }
+        template<class T>
+        void addDeposit(std::shared_ptr<T> t)
+        {
+            possesed_products.push_back(t);
+        }
         void removeDeposit(unsigned int id);
         void setDepositRate(unsigned int id, bank_rate rate);
         void convertDeposit(unsigned int id, std::string currency_symbol, bank_rate exchange_rate);
         const Deposit& findDeposit(unsigned int id);
         std::vector<std::shared_ptr<Deposit>> getDeposits() const;
         unsigned int countDeposits()const{return possesed_products.size();};
+        unsigned int getUniqueIndex();
 
         //Operator overloading
         friend std::ostream& operator<<(std::ostream &os, const BankAccount &b);
