@@ -19,6 +19,13 @@ class InvalidBalanceInputValueError: public BaseException
         InvalidBalanceInputValueError(const std::string &message): BaseException(message){};
 };
 
+class InvalidAddMoneyAmountError: public BaseException
+{
+    public:
+        InvalidAddMoneyAmountError(const std::string &message): BaseException(message){};
+};
+
+
 class InvalidRateValueError: public BaseException
 {
     public:
@@ -35,6 +42,12 @@ class InvalidTermValueError: public BaseException
 {
     public:
         InvalidTermValueError(const std::string &message): BaseException(message){};
+};
+
+class InvalidMonthValueError: public BaseException
+{
+    public:
+        InvalidMonthValueError(const std::string &message): BaseException(message){};
 };
 
 class InvalidIdValueError: public BaseException

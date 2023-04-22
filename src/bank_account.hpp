@@ -2,6 +2,7 @@
 #define BANK_ACCOUNT_HPP
 
 #include <iostream>
+#include "factory.hpp"
 #include "deposit.hpp"
 #include "date.hpp"
 #include <vector>
@@ -21,9 +22,12 @@ class BankAccount
     private:
         unsigned int createUniqeIndex(const std::vector<std::shared_ptr<Deposit>> &d);
         Deposit& findDepositReference(unsigned int id);
+        std::shared_ptr<Deposit> findDepositPointer(unsigned int id);
         std::string name;
         std::string surname;
         std::vector<std::shared_ptr<Deposit>> possesed_products;
+
+        std::unique_ptr<DepositFactory> factory;
 
         // Birthdate
         void setBirthdate(std::string birth_date_str);

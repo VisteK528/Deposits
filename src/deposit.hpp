@@ -45,7 +45,7 @@ class Deposit: public Product
         void setCapitalGainsTax(int capital_gains_tax);
 
         // Overrried methods
-        virtual void print(std::ostream &os) const override {os<<"Hello";}
+        virtual void print(std::ostream &os) const override;
 
     public:
         virtual ~Deposit() = default;
@@ -53,12 +53,9 @@ class Deposit: public Product
         bank_rate getRate() const;
         void setRate(bank_rate rate);
 
-        //Overried methods
-        //virtual unsigned int getTerm() const override;
-
         // Virtual functions
-        virtual double calculateProfit() const {return 5.;}
-        virtual void saveToFile(std::ostream &os) const override {os<<"Hello World";}
+        virtual double calculateProfit() const;
+        virtual void saveToFile(std::ostream &os) const override;
 
 
         // Operators
@@ -67,6 +64,7 @@ class Deposit: public Product
         friend std::ostream& operator<<(std::ostream& os, const Deposit &d);
 
 };
+
 class TraditionalDeposit: public Deposit
 {
     protected:
@@ -100,28 +98,45 @@ class CurrencyDeposit: public TraditionalDeposit
         void convert(std::string currency, bank_rate exchange_rate);
 };
 
-// class DynamicDeposit: public Deposit
-// {
-//     protected:
-//         virtual void print(std::ostream &os) const override;
-//     public:
-//         double calculateProfit() const override;
-//         unsigned int getTerm() const override;
-// };
+class AdditiveDeposit: public TraditionalDeposit
+{
+    private:
+        unsigned int overall_added = 0;
+        std::vector<double> added_money;
+    public:
+        AdditiveDeposit(){};
+        AdditiveDeposit(double balance, bank_rate rate, std::string currency, int term_months, int id, int capital_gains_tax): TraditionalDeposit(balance, rate, currency, term_months, id, capital_gains_tax)
+        {
+            this->product_type="AdditiveDeposit";
+            added_money.reserve(term_months);
+            std::fill(added_money.begin(), added_money.end(), 0.0);
+        }
+        double calculateProfit() const override;
+        void addMoney(int addition_month, double amount);
+};
 
-// class OneDayDeposit: public Deposit
-// {
-//     protected:
-//         virtual void print(std::ostream &os) const override;
-//     public:
-//         double calculateProfit() const override;
-// };
+class ProgressiveDeposit: public Deposit
+{
+    private:
+        std::vector<bank_rate> rate_coefficients;
+        void print(std::ostream &os) const override;
+    public:
+        ProgressiveDeposit(){};
+        ProgressiveDeposit(double balance, std::vector<bank_rate> rate_coefficients, std::string currency, int term_months, int id, int capital_gains_tax);
+        double calculateProfit() const override;
+        //unsigned int getTerm() const override;
+        void setRate(std::vector<bank_rate> rate_coefficients);
+        virtual void saveToFile(std::ostream &os) const override;
+};
 
-// class OvernightDeposit: public OneDayDeposit
-// {
-//     public:
-
-// };
+class ShortTimeDeposit: public Deposit
+{
+    private:
+        unsigned int MIN_BALANCE = 2000000;
+    public:
+        ShortTimeDeposit(){};
+        ShortTimeDeposit(double balance, bank_rate rate, std::string currency, int term_hours, int id);
+};
 
 
 #endif
