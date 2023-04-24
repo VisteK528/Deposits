@@ -14,15 +14,17 @@ W tym zadaniu zdecydowałem się na dalszą modyfikację zadania 2. Jednakże ze
     * Wykorzystałem szablony, aby zamiast tworzyć szereg metod `addDeposit` dla każdego typu obiektu oddzielnie robił to za mnie kompilator. Zwiększa to przejrzystość kodu oraz realizuje regułę DRY
     ```cpp
     template<class T>
-        void addDeposit(std::shared_ptr<T> t)
-        {
-            possesed_products.push_back(t);
-        }
+    void addDeposit(std::shared_ptr<T> t)
+    {
+        t->setId(getUniqueIndex());
+        possesed_products.push_back(t);
+    }
     ```
     * Dla wykorzystania metod takich jak `convert()` lub `addMoney()` wykorzystałem dynamiczne rzutowanie wskaźnika obiektu przechowywanego jako wskaźnik do klasy bazowej na wskaźnik do rzeczywistej klasy obiektu, umożliwiając korzystanie z wyżej wymienionych metod.
     * Inne zmiany w klasie `BankAccount` w celu przystosowania jej do zmian w projekcie
 4. Zmiany w pliku `main.cpp` umożliwiające podawanie różnych zestawów danych w celu tworzenia różnych typów lokat
-5. Reorganizacja i napisanie nowych testów dla nowych klas powstałych w ramach zadania.5
+5. Reorganizacja i napisanie nowych testów dla nowych klas powstałych w ramach zadania 4
+6. Implementacja w nowej formie metod `void saveToFile` umożliwiających zapis klasy do strumienia oraz implementacja metod w klasie `DepositFactory` umożliwiających stworzenie obiektu i zwrócenie go na podstawie strumienia wejściowego.
 
 Poniżej przestawiam schemat klas, który próbowałem stworzyć w UML
 ![image](untitled_workspace.png)

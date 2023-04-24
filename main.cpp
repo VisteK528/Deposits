@@ -75,17 +75,11 @@ int main(int argc, char* argv[])
     BankAccount account(name, surname, birth_date);
     DepositFactory factory;
 
-    const int index1 = account.getUniqueIndex();
-    const int index2 = account.getUniqueIndex();
-    const int index3 = account.getUniqueIndex();
-    const int index4 = account.getUniqueIndex();
-
-    account.addDeposit(factory.createTraditionalDeposit(TRADITIONAL, 972.71, 3.14, "PLN", 6, index1, 19));
-    account.addDeposit(factory.createTraditionalDeposit(CURRENCY, 1410.43, 3.14, "EUR", 6, index2, 19));
-    account.addDeposit(factory.createTraditionalDeposit(TRADITIONAL, 1364.12, 2.71, "PLN", 6, index3, 19));
-    account.addDeposit(factory.createProgressiveDeposit(2000, {3.14, 3.14, 3.14, 3.14, 3.14, 3.14}, "PLN", 6, index4, 19));
-    // account.addDeposit(1410.43, 3.14, "PLN", 6, 19);
-    // account.addDeposit(1945.01, 3.14, "PLN", 6, 19);
+    account.addDeposit(factory.createTraditionalDeposit(TRADITIONAL, 972.71, 3.14, "PLN", 6, 19));
+    account.addDeposit(factory.createTraditionalDeposit(CURRENCY, 1410.43, 3.14, "EUR", 6, 19));
+    account.addDeposit(factory.createTraditionalDeposit(TRADITIONAL, 1364.12, 2.71, "PLN", 6, 19));
+    account.addDeposit(factory.createProgressiveDeposit(2000, {3.14, 3.14, 3.14, 3.14, 3.14, 3.14}, "PLN", 6, 19));
+    account.addDeposit(factory.createTraditionalDeposit(ADDITIVE, 2000, 3.14, "PLN", 6, 19));
 
     std::cout<<"Hello, "<< account.getName() <<' '<<account.getSurname()<<'!'<<std::endl;
     std::cout<<"Thank you for choosing PROI Financial Services©!"<<std::endl;
@@ -331,14 +325,27 @@ int main(int argc, char* argv[])
             try
             {
                 const Deposit& found_deposit = account.findDeposit(id);
+                std::string deposit_type = found_deposit.getProductType();
                 std::cout<<"Deposit to be modified: "<<std::endl;
                 std::cout<<found_deposit<<std::endl<<std::endl;
 
                 int choice;
                 std::cout<<"List of possible modifications: "<<std::endl;
                 std::cout<<"\t1. Change rate of the deposit"<<std::endl;
-                std::cout<<"\t2. Convert the deposit to specified currency"<<std::endl;
-                std::cout<<"\t3. Go back"<<std::endl;
+                if(deposit_type == "CurrencyDeposit")
+                {
+                    std::cout<<"\t2. Convert the deposit to specified currency"<<std::endl;
+                    std::cout<<"\t3. Go back"<<std::endl;
+                }
+                else if(deposit_type == "AdditiveDeposit")
+                {
+                    std::cout<<"\t2. Add money to the deposit"<<std::endl;
+                    std::cout<<"\t3. Go back"<<std::endl;
+                }
+                else
+                {
+                    std::cout<<"\t2. Go back"<<std::endl;
+                }
                 std::cout<<"Your choice: ";
                 try
                 {
@@ -360,7 +367,39 @@ int main(int argc, char* argv[])
                 }
                 std::cout<<"\n\n";
 
-                if(choice == 1)
+                if (choice == 1 && deposit_type == "ProgressiveDeposit")
+                {
+                    std::shared_ptr<ProgressiveDeposit> progressive_deposit = std::dynamic_pointer_cast<ProgressiveDeposit>(account.findDepositPointer(id));
+                    std::vector<bank_rate> rates = progressive_deposit->getRates();
+
+                    std::string term_str;
+                    std::string rate_str;
+                    int term;
+                    bank_rate rate;
+
+                    std::cout<<"Please, type the number of rate you would like to change: ";
+                    std::cin>>term_str;
+                    std::cout<<"Please, type the new value of rate: ";
+                    std::cin>>rate_str;
+                    try
+                    {
+                        term = std::stoi(term_str);
+                        if(term < 1 or term > rates.size())
+                        {
+                            throw InvalidTermValueError("Cannot change the specified rate number, less than 1 or greater than size of rates!");
+                        }
+                        rate = std::stod(rate_str);
+                        rates[term-1] = rate;
+                        progressive_deposit->setRate(rates);
+                        std::cout<<"Successfully changed specified rate!"<<std::endl;
+                    }
+                    catch(const std::exception& e)
+                    {
+                        std::cerr << e.what() << '\n';
+                    }
+
+                }
+                else if(choice == 1)
                 {
                     std::string string_rate;
                     double rate;
@@ -384,7 +423,7 @@ int main(int argc, char* argv[])
                         std::cerr << e.what() << '\n';
                     }
                 }
-                else if(choice == 2)
+                else if(choice == 2 && deposit_type == "CurrencyDeposit")
                 {
                     double exchange_rate;
                     std::string currency_symbol;
@@ -412,6 +451,29 @@ int main(int argc, char* argv[])
                         std::cerr << e.what() << '\n';
                     }
                 }
+                else if(choice == 2 && deposit_type == "AdditiveDeposit")
+                {
+                    double new_money;
+                    int term;
+                    std::string new_money_str;
+                    std::string term_str;
+                    std::cout<<"Please, type number of month from the start of you Deposit when you would like to add money: ";
+                    std::cin>>term_str;
+                    std::cout<<"Please, type the amount of money you would like to add: ";
+                    std::cin>>new_money_str;
+                    try
+                    {
+                        new_money = std::stod(new_money_str);
+                        term = std::stoi(term_str);
+                    }
+                    catch(const std::exception& e)
+                    {
+                        std::cerr << e.what() << '\n';
+                    }
+                    std::shared_ptr<AdditiveDeposit> additive_deposit = std::dynamic_pointer_cast<AdditiveDeposit>(account.findDepositPointer(id));
+                    additive_deposit->addMoney(term, new_money);
+                    std::cout<<"Balance has been updated successfully"<<std::endl;
+                }
                 else
                 {
                     std::system("clear");
@@ -429,11 +491,11 @@ int main(int argc, char* argv[])
             int id = getID();
             try
             {
-                Deposit found_deposit = account.findDeposit(id);
+                std::shared_ptr<Deposit> found_deposit = account.findDepositPointer(id);
                 std::cout<<"Properties of the deposit with ID: "<<id<<std::endl;
-                std::cout<<found_deposit<<std::endl;
-                std::cout<<"Expected profits after "<<found_deposit.getTerm()<<" months: ";
-                std::cout<<found_deposit.calculateProfit()<<' '<<found_deposit.getCurrency()<<std::endl;
+                std::cout<<*found_deposit<<std::endl;
+                std::cout<<"Expected profits after "<<found_deposit->getTerm()<<" months: ";
+                std::cout<<found_deposit->calculateProfit()<<' '<<found_deposit->getCurrency()<<std::endl;
             }
             catch(const ProductsInvalidIndexError& e)
             {
