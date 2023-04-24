@@ -1,6 +1,6 @@
 #define CATCH_CONFIG_MAIN
 #include "catch.hpp"
-#include "../src/deposit.hpp"
+#include "../src/factory.hpp"
 
 TEST_CASE("Create TraditionalDeposit", "[TraditionalDeposit]")
 {
@@ -198,6 +198,77 @@ TEST_CASE("Test deposit equality", "[TraditionalDeposit]")
 
 // }
 
+TEST_CASE("Test creating Deposit from stream", "[Deposit]")
+{
+    DepositFactory factory;
+    SECTION("Creating TraditionalDeposit from stream", "[TraditionalDeposit]")
+    {
+        std::string data = "1\nTraditionalDeposit\n2569.000000\nPLN\n1.140000\n12\n19\n";
+        std::stringstream stream(data);
+        std::shared_ptr<TraditionalDeposit> my_deposit = factory.createTraditionalDeposit(TRADITIONAL, stream);
+        REQUIRE(my_deposit->getBalance() == 2569);
+        REQUIRE(my_deposit->getCurrency() == "PLN");
+        REQUIRE(my_deposit->getCapitalGainsTax() == 19);
+        REQUIRE(my_deposit->getId() == 1);
+        REQUIRE(my_deposit->getProductType() == "TraditionalDeposit");
+        REQUIRE(my_deposit->getRate() == 1.14);
+        REQUIRE(my_deposit->getTerm() == 12);
+    }
+    SECTION("Creating CurrencyDeposit from stream", "[CurrencyDeposit]")
+    {
+        std::string data = "2\nCurrencyDeposit\n881.000000\nEUR\n1.140000\n6\n19\n";
+        std::stringstream stream(data);
+        std::shared_ptr<CurrencyDeposit> my_deposit = std::dynamic_pointer_cast<CurrencyDeposit>(factory.createTraditionalDeposit(CURRENCY, stream));
+        REQUIRE(my_deposit->getBalance() == 881);
+        REQUIRE(my_deposit->getCurrency() == "EUR");
+        REQUIRE(my_deposit->getCapitalGainsTax() == 19);
+        REQUIRE(my_deposit->getId() == 2);
+        REQUIRE(my_deposit->getProductType() == "CurrencyDeposit");
+        REQUIRE(my_deposit->getRate() == 1.14);
+        REQUIRE(my_deposit->getTerm() == 6);
+    }
+    SECTION("Creating AdditiveDeposit from stream", "[AdditiveDeposit]")
+    {
+        std::string data = "2\nAdditiveDeposit\n2881.000000\nPLN\n2000\n0,0,0,0,0,2000,\n1.140000\n6\n19\n";
+        std::stringstream stream(data);
+        std::shared_ptr<AdditiveDeposit> my_deposit = std::dynamic_pointer_cast<AdditiveDeposit>(factory.createTraditionalDeposit(ADDITIVE, stream));
+        REQUIRE(my_deposit->getBalance() == 2881);
+        REQUIRE(my_deposit->getCurrency() == "PLN");
+        REQUIRE(my_deposit->getCapitalGainsTax() == 19);
+        REQUIRE(my_deposit->getId() == 2);
+        REQUIRE(my_deposit->getProductType() == "AdditiveDeposit");
+        REQUIRE(my_deposit->getRate() == 1.14);
+        REQUIRE(my_deposit->getTerm() == 6);
+    }
+    SECTION("Creating ProgressiveDeposit from stream", "[ProgressiveDeposit]")
+    {
+        std::string data = "2\nProgressiveDeposit\n881.000000\nPLN\n3.14,3.14,3.14,\n3\n19\n";
+        std::stringstream stream(data);
+        std::shared_ptr<ProgressiveDeposit> my_deposit = factory.createProgressiveDeposit(stream);
+        REQUIRE(my_deposit->getBalance() == 881);
+        REQUIRE(my_deposit->getCurrency() == "PLN");
+        REQUIRE(my_deposit->getCapitalGainsTax() == 19);
+        REQUIRE(my_deposit->getId() == 2);
+        REQUIRE(my_deposit->getProductType() == "ProgressiveDeposit");
+        std::vector<bank_rate> rates = {3.14, 3.14, 3.14};
+        REQUIRE(my_deposit->getRates() == rates);
+        REQUIRE(my_deposit->getTerm() == 3);
+    }
+    SECTION("Creating ShortTermDeposit from stream", "[ShortTermDeposit]")
+    {
+        std::string data = "2\nShortTermDeposit\n30000.000000\nPLN\n1.140000\n12\n0\n";
+        std::stringstream stream(data);
+        std::shared_ptr<ShortTimeDeposit> my_deposit = factory.createShortTimeDeposit(stream);
+        REQUIRE(my_deposit->getBalance() == 30000);
+        REQUIRE(my_deposit->getCurrency() == "PLN");
+        REQUIRE(my_deposit->getCapitalGainsTax() == 0);
+        REQUIRE(my_deposit->getId() == 2);
+        REQUIRE(my_deposit->getProductType() == "ShortTermDeposit");
+        REQUIRE(my_deposit->getRate() == 1.14);
+        REQUIRE(my_deposit->getTerm() == 12);
+    }
+}
+
 TEST_CASE("Test saving Deposit to stream", "[Deposit]")
 {
     SECTION("Saving traditional deposit to stream", "[TraditionalDeposit]")
@@ -218,8 +289,9 @@ TEST_CASE("Test saving Deposit to stream", "[Deposit]")
     {
         std::stringstream stream;
         AdditiveDeposit my_deposit(881, 1.14, "PLN", 6, 2, 19);
+        my_deposit.addMoney(5, 2000);
         my_deposit.saveToFile(stream);
-        REQUIRE(stream.str() == "2\nAdditiveDeposit\n881.000000\nPLN\n0\n0,0,0,0,0,0,\n1.140000\n6\n19\n");
+        REQUIRE(stream.str() == "2\nAdditiveDeposit\n2881.000000\nPLN\n2000\n0,0,0,0,0,2000,\n1.140000\n6\n19\n");
     }
     SECTION("Saving ProgressiveDeposit to stream", "[ProgressiveDeposit]")
     {
@@ -235,7 +307,6 @@ TEST_CASE("Test saving Deposit to stream", "[Deposit]")
         my_deposit.saveToFile(stream);
         REQUIRE(stream.str() == "2\nShortTermDeposit\n30000.000000\nPLN\n1.140000\n12\n0\n");
     }
-
 }
 
 //ShortTerm Deposit

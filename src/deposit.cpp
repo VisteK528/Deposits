@@ -215,6 +215,24 @@ AdditiveDeposit::AdditiveDeposit(double balance, bank_rate rate, std::string cur
     std::fill(this->added_money.begin(), this->added_money.end(), 0.0);
 }
 
+AdditiveDeposit::AdditiveDeposit(double balance, bank_rate rate, std::string currency, int term_months, int id, int capital_gains_tax, double overall_added, std::vector<double> added_money_by_months): TraditionalDeposit(balance, rate, currency, term_months, id, capital_gains_tax)
+{
+    this->product_type="AdditiveDeposit";
+    if(overall_added < 0)
+    {
+        throw InvalidAddMoneyAmountError("Money added to the account cannot be negative!");
+    }
+    this->overall_added = (int)overall_added*100;
+    for(auto const money: added_money_by_months)
+    {
+        if(money < 0)
+        {
+            throw InvalidAddMoneyAmountError("Money added in specific month and remaining in the next months cannot be negative!");
+        }
+    }
+    this->added_money = added_money_by_months;
+}
+
 void AdditiveDeposit::addMoney(int month, double amount)
 {
     if(month < 0)
@@ -233,7 +251,7 @@ void AdditiveDeposit::addMoney(int month, double amount)
     unsigned int integer_added = amount*100;
     balance += integer_added;
     overall_added += integer_added;
-    std::fill(added_money.begin()+month, added_money.end(), integer_added);
+    std::fill(added_money.begin()+month, added_money.end(), amount);
 }
 
 double AdditiveDeposit::calculateProfit() const
@@ -243,7 +261,7 @@ double AdditiveDeposit::calculateProfit() const
     double tax = (100-capital_gains_tax)/100.;
     for(double money: added_money)
     {
-        profit += (balance - overall_added + money)*(1/12.)*rate;
+        profit += (balance - overall_added + money*100)*(1/12.)*rate;
     }
     integer_profit = (int)round(profit*tax/1000000);
     return (double)integer_profit/100;
@@ -255,7 +273,7 @@ void AdditiveDeposit::saveToFile(std::ostream &os) const
     os << product_type << '\n';
     os << std::to_string(getBalance()) << '\n';
     os << currency << '\n';
-    os << overall_added << '\n';
+    os << ((double)overall_added/100) << '\n';
     for(auto &money: added_money)
     {
         os<<money<<',';

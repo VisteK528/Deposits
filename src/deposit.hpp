@@ -104,6 +104,7 @@ class AdditiveDeposit: public TraditionalDeposit
     public:
         AdditiveDeposit(){};
         AdditiveDeposit(double balance, bank_rate rate, std::string currency, int term_months, int id, int capital_gains_tax);
+        AdditiveDeposit(double balance, bank_rate rate, std::string currency, int term_months, int id, int capital_gains_tax, double overall_added, std::vector<double> added_money_by_months);
         double calculateProfit() const override;
         void addMoney(int addition_month, double amount);
         void saveToFile(std::ostream &os) const override;
