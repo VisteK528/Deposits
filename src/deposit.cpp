@@ -112,8 +112,8 @@ void Deposit::saveToFile(std::ostream &os) const
 
 void Deposit::print(std::ostream &os) const
 {
-    os<<"ID: "<<id<<'\n';
     os<<"Product type: "<< product_type<<'\n';
+    os<<"ID: "<<id<<'\n';
     os<<"Balance: "<< getBalance()<<' '<<currency<<'\n';
     os<<"Term: "<<getTerm()<<" hours"<<'\n';
     os<<"Rate: "<<getRate()<<"%\n";
@@ -154,8 +154,8 @@ void TraditionalDeposit::setTerm(int term_months)
 
 void TraditionalDeposit::print(std::ostream &os) const
 {
-    os<<"ID: "<<id<<'\n';
     os<<"Product type: "<< product_type<<'\n';
+    os<<"ID: "<<id<<'\n';
     os<<"Balance: "<< getBalance()<<' '<<currency<<'\n';
     os<<"Term: "<<getTerm()<<" months"<<'\n';
     os<<"Rate: "<<getRate()<<"%\n";
@@ -249,6 +249,23 @@ double AdditiveDeposit::calculateProfit() const
     return (double)integer_profit/100;
 }
 
+void AdditiveDeposit::saveToFile(std::ostream &os) const
+{
+    os << std::to_string(id) << '\n';
+    os << product_type << '\n';
+    os << std::to_string(getBalance()) << '\n';
+    os << currency << '\n';
+    os << overall_added << '\n';
+    for(auto &money: added_money)
+    {
+        os<<money<<',';
+    }
+    os<<'\n';
+    os << std::to_string(getRate()) << '\n';
+    os << std::to_string(term_months.count()) << '\n';
+    os << std::to_string(capital_gains_tax) << '\n';
+}
+
 // Progressive deposit
 ProgressiveDeposit::ProgressiveDeposit(double balance, std::vector<bank_rate> rate_coefficients, std::string currency, int term_months, int id, int capital_gains_tax)
 {
@@ -283,6 +300,16 @@ void ProgressiveDeposit::setRate(std::vector<bank_rate> rate_coefficients)
     this->rate_coefficients = rate_coefficients;
 }
 
+std::vector<bank_rate> ProgressiveDeposit::getRates() const
+{
+    return this->rate_coefficients;
+}
+
+unsigned int ProgressiveDeposit::getTerm() const
+{
+    return this->term_months.count();
+}
+
 void ProgressiveDeposit::saveToFile(std::ostream &os) const
 {
     os << std::to_string(id) << '\n';
@@ -294,21 +321,22 @@ void ProgressiveDeposit::saveToFile(std::ostream &os) const
         os<<r<<',';
     }
     os<<'\n';
-    os << std::to_string(term.count()) << '\n';
+    os << std::to_string(term_months.count()) << '\n';
     os << std::to_string(capital_gains_tax) << '\n';
 }
 
 void ProgressiveDeposit::print(std::ostream &os) const
 {
-    os<<"ID: "<<id<<'\n';
     os<<"Product type: "<< product_type<<'\n';
+    os<<"ID: "<<id<<'\n';
     os<<"Balance: "<< getBalance()<<' '<<currency<<'\n';
     os<<"Term: "<<getTerm()<<" months"<<'\n';
-    os<<"Rate Coefficients: ";
+    os<<"Rate Coefficients: \n";
     int i = 1;
-    for(auto &r: rate_coefficients)
+    for(auto const &r: rate_coefficients)
     {
         os<<"\tMonth number: "<<i<<'\t'<<"Rate: "<<r<<'\n';
+        i++;
     }
     os<<"Capital gains tax: "<<capital_gains_tax<<" %\n";
 }
@@ -324,6 +352,19 @@ double ProgressiveDeposit::calculateProfit() const
     }
     integer_profit = (int)round(profit*tax/100);
     return (double)integer_profit/100;
+}
+
+void ProgressiveDeposit::setTerm(int term_months)
+{
+    if(term_months < 0)
+    {
+        throw InvalidTermValueError("Time in months cannot be negative!");
+    }
+    else
+    {
+        this->term = std::chrono::hours(term_months*720);
+        this->term_months = std::chrono::months(term_months);
+    }
 }
 
 // ShortTerm deposit

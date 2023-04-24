@@ -116,58 +116,58 @@ TEST_CASE("Create deposit with invalid values", "[TraditionalDeposit]")
     }
 }
 
-// TEST_CASE("Test converting the currency of the deposit", "[deposit]")
-// {
-//     Deposit my_deposit(2569, 1.14, "PLN", 12, 1, 19);
-//     SECTION("Test converting to PLN", "[deposit]")
-//     {
-//         bank_rate exchange_rate = 1;
-//         std::string exchange_currency = "PLN";
-//         REQUIRE(my_deposit.getBalance() == 2569);
-//         REQUIRE(my_deposit.getRate() == 1.14);
-//         REQUIRE(my_deposit.getCurrency() == "PLN");
-//         my_deposit.convert(exchange_currency, exchange_rate);
-//         REQUIRE(my_deposit.getBalance() == 2569);
-//         REQUIRE(my_deposit.getRate() == 1.14);
-//         REQUIRE(my_deposit.getCurrency() == "PLN");
-//     }
-//     SECTION("Test converting to USD", "[deposit]")
-//     {
-//         bank_rate exchange_rate = 4.39;
-//         std::string exchange_currency = "USD";
-//         REQUIRE(my_deposit.getBalance() == 2569);
-//         REQUIRE(my_deposit.getRate() == 1.14);
-//         REQUIRE(my_deposit.getCurrency() == "PLN");
-//         my_deposit.convert(exchange_currency, exchange_rate);
-//         REQUIRE(my_deposit.getBalance() == 585.19);
-//         REQUIRE(my_deposit.getRate() == 1.14);
-//         REQUIRE(my_deposit.getCurrency() == exchange_currency);
-//     }
-//     SECTION("Test converting to GBP", "[deposit]")
-//     {
-//         bank_rate exchange_rate = 5.39;
-//         std::string exchange_currency = "GBP";
-//         REQUIRE(my_deposit.getBalance() == 2569);
-//         REQUIRE(my_deposit.getRate() == 1.14);
-//         REQUIRE(my_deposit.getCurrency() == "PLN");
-//         my_deposit.convert(exchange_currency, exchange_rate);
-//         REQUIRE(my_deposit.getBalance() == 476.62);
-//         REQUIRE(my_deposit.getRate() == 1.14);
-//         REQUIRE(my_deposit.getCurrency() == exchange_currency);
-//     }
-//     SECTION("Test converting to EUR", "[deposit]")
-//     {
-//         bank_rate exchange_rate = 4.7;
-//         std::string exchange_currency = "EUR";
-//         REQUIRE(my_deposit.getBalance() == 2569);
-//         REQUIRE(my_deposit.getRate() == 1.14);
-//         REQUIRE(my_deposit.getCurrency() == "PLN");
-//         my_deposit.convert(exchange_currency, exchange_rate);
-//         REQUIRE(my_deposit.getBalance() == 546.6);
-//         REQUIRE(my_deposit.getRate() == 1.14);
-//         REQUIRE(my_deposit.getCurrency() == exchange_currency);
-//     }
-// }
+TEST_CASE("Test converting the currency of the deposit", "[deposit]")
+{
+    CurrencyDeposit my_deposit(2569, 1.14, "PLN", 12, 1, 19);
+    SECTION("Test converting to PLN", "[deposit]")
+    {
+        bank_rate exchange_rate = 1;
+        std::string exchange_currency = "PLN";
+        REQUIRE(my_deposit.getBalance() == 2569);
+        REQUIRE(my_deposit.getRate() == 1.14);
+        REQUIRE(my_deposit.getCurrency() == "PLN");
+        my_deposit.convert(exchange_currency, exchange_rate);
+        REQUIRE(my_deposit.getBalance() == 2569);
+        REQUIRE(my_deposit.getRate() == 1.14);
+        REQUIRE(my_deposit.getCurrency() == "PLN");
+    }
+    SECTION("Test converting to USD", "[deposit]")
+    {
+        bank_rate exchange_rate = 4.39;
+        std::string exchange_currency = "USD";
+        REQUIRE(my_deposit.getBalance() == 2569);
+        REQUIRE(my_deposit.getRate() == 1.14);
+        REQUIRE(my_deposit.getCurrency() == "PLN");
+        my_deposit.convert(exchange_currency, exchange_rate);
+        REQUIRE(my_deposit.getBalance() == 585.19);
+        REQUIRE(my_deposit.getRate() == 1.14);
+        REQUIRE(my_deposit.getCurrency() == exchange_currency);
+    }
+    SECTION("Test converting to GBP", "[deposit]")
+    {
+        bank_rate exchange_rate = 5.39;
+        std::string exchange_currency = "GBP";
+        REQUIRE(my_deposit.getBalance() == 2569);
+        REQUIRE(my_deposit.getRate() == 1.14);
+        REQUIRE(my_deposit.getCurrency() == "PLN");
+        my_deposit.convert(exchange_currency, exchange_rate);
+        REQUIRE(my_deposit.getBalance() == 476.62);
+        REQUIRE(my_deposit.getRate() == 1.14);
+        REQUIRE(my_deposit.getCurrency() == exchange_currency);
+    }
+    SECTION("Test converting to EUR", "[deposit]")
+    {
+        bank_rate exchange_rate = 4.7;
+        std::string exchange_currency = "EUR";
+        REQUIRE(my_deposit.getBalance() == 2569);
+        REQUIRE(my_deposit.getRate() == 1.14);
+        REQUIRE(my_deposit.getCurrency() == "PLN");
+        my_deposit.convert(exchange_currency, exchange_rate);
+        REQUIRE(my_deposit.getBalance() == 546.6);
+        REQUIRE(my_deposit.getRate() == 1.14);
+        REQUIRE(my_deposit.getCurrency() == exchange_currency);
+    }
+}
 
 
 TEST_CASE("Test deposit equality", "[TraditionalDeposit]")
@@ -198,14 +198,45 @@ TEST_CASE("Test deposit equality", "[TraditionalDeposit]")
 
 // }
 
-// TEST_CASE("Test saving Deposit to stream", "[deposit]")
-// {
-//     std::stringstream stream;
-//     Deposit my_deposit(2569, 1.14, "PLN", 12, 1, 19);
-//     saveToFile(stream, my_deposit);
-//     REQUIRE(stream.str() == "1,2569.000000,PLN,1.140000,12,19,");
+TEST_CASE("Test saving Deposit to stream", "[Deposit]")
+{
+    SECTION("Saving traditional deposit to stream", "[TraditionalDeposit]")
+    {
+        std::stringstream stream;
+        TraditionalDeposit my_deposit(2569, 1.14, "PLN", 12, 1, 19);
+        my_deposit.saveToFile(stream);
+        REQUIRE(stream.str() == "1\nTraditionalDeposit\n2569.000000\nPLN\n1.140000\n12\n19\n");
+    }
+    SECTION("Saving currency deposit to stream", "[CurrencyDeposit]")
+    {
+        std::stringstream stream;
+        CurrencyDeposit my_deposit(881, 1.14, "EUR", 6, 2, 19);
+        my_deposit.saveToFile(stream);
+        REQUIRE(stream.str() == "2\nCurrencyDeposit\n881.000000\nEUR\n1.140000\n6\n19\n");
+    }
+    SECTION("Saving AdditiveDeposit to stream", "[AdditiveDeposit]")
+    {
+        std::stringstream stream;
+        AdditiveDeposit my_deposit(881, 1.14, "PLN", 6, 2, 19);
+        my_deposit.saveToFile(stream);
+        REQUIRE(stream.str() == "2\nAdditiveDeposit\n881.000000\nPLN\n0\n0,0,0,0,0,0,\n1.140000\n6\n19\n");
+    }
+    SECTION("Saving ProgressiveDeposit to stream", "[ProgressiveDeposit]")
+    {
+        std::stringstream stream;
+        ProgressiveDeposit my_deposit(881, {3.14, 3.14, 3.14}, "PLN", 3, 2, 19);
+        my_deposit.saveToFile(stream);
+        REQUIRE(stream.str() == "2\nProgressiveDeposit\n881.000000\nPLN\n3.14,3.14,3.14,\n3\n19\n");
+    }
+    SECTION("Saving ShortTermDeposit to stream", "[ShortTermDeposit]")
+    {
+        std::stringstream stream;
+        ShortTimeDeposit my_deposit(30000, 1.14, "PLN", 12, 2);
+        my_deposit.saveToFile(stream);
+        REQUIRE(stream.str() == "2\nShortTermDeposit\n30000.000000\nPLN\n1.140000\n12\n0\n");
+    }
 
-// }
+}
 
 //ShortTerm Deposit
 

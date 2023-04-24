@@ -106,6 +106,7 @@ class AdditiveDeposit: public TraditionalDeposit
         AdditiveDeposit(double balance, bank_rate rate, std::string currency, int term_months, int id, int capital_gains_tax);
         double calculateProfit() const override;
         void addMoney(int addition_month, double amount);
+        void saveToFile(std::ostream &os) const override;
 };
 
 class ProgressiveDeposit: public Deposit
@@ -113,13 +114,20 @@ class ProgressiveDeposit: public Deposit
     private:
         using Deposit::getRate;
         std::vector<bank_rate> rate_coefficients;
+
+        std::chrono::months term_months;
+
+        // Overried methods
+        virtual void setTerm(int term) override;
         void print(std::ostream &os) const override;
     public:
         ProgressiveDeposit(){};
         ProgressiveDeposit(double balance, std::vector<bank_rate> rate_coefficients, std::string currency, int term_months, int id, int capital_gains_tax);
+        std::vector<bank_rate> getRates() const;
         double calculateProfit() const override;
         void setRate(std::vector<bank_rate> rate_coefficients);
-        virtual void saveToFile(std::ostream &os) const override;
+        void saveToFile(std::ostream &os) const override;
+        unsigned int getTerm() const override;
 };
 
 class ShortTimeDeposit: public Deposit
