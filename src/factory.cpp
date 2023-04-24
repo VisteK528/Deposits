@@ -1,7 +1,7 @@
 #include "factory.hpp"
 
 
-std::shared_ptr<TraditionalDeposit> DepositFactory::createTraditionalDeposit(DEPOSITS deposit_type, double balance, bank_rate rate, std::string currency, int term_months, int id, int capital_gains_tax) const
+std::shared_ptr<TraditionalDeposit> DepositFactory::createTraditionalDeposit(DEPOSITS deposit_type, double balance, bank_rate rate, std::string currency, int term_months, int capital_gains_tax, int id) const
 {
     switch (deposit_type)
     {
@@ -17,7 +17,7 @@ std::shared_ptr<TraditionalDeposit> DepositFactory::createTraditionalDeposit(DEP
     }
 }
 
-std::shared_ptr<ProgressiveDeposit> DepositFactory::createProgressiveDeposit(double balance, std::vector<bank_rate> rate_coefficients, std::string currency, int term_months, int id, int capital_gains_tax) const
+std::shared_ptr<ProgressiveDeposit> DepositFactory::createProgressiveDeposit(double balance, std::vector<bank_rate> rate_coefficients, std::string currency, int term_months, int capital_gains_tax, int id) const
 {
    return std::make_shared<ProgressiveDeposit>(balance, rate_coefficients,currency, term_months, id, capital_gains_tax);
 }

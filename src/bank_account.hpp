@@ -21,7 +21,6 @@ class BankAccount
 {
     private:
         Deposit& findDepositReference(unsigned int id);
-        std::shared_ptr<Deposit> findDepositPointer(unsigned int id);
         std::string name;
         std::string surname;
         std::vector<std::shared_ptr<Deposit>> possesed_products;
@@ -40,11 +39,13 @@ class BankAccount
         template<class T>
         void addDeposit(const T &t)
         {
+            t.setId(getUniqueIndex());
             possesed_products.push_back(std::make_shared<T>(t));
         }
         template<class T>
         void addDeposit(std::shared_ptr<T> t)
         {
+            t->setId(getUniqueIndex());
             possesed_products.push_back(t);
         }
         void removeDeposit(unsigned int id);
@@ -52,6 +53,7 @@ class BankAccount
         void convertDeposit(unsigned int id, std::string currency_symbol, bank_rate exchange_rate);
         const Deposit& findDeposit(unsigned int id);
         std::vector<std::shared_ptr<Deposit>> getDeposits() const;
+        std::shared_ptr<Deposit> findDepositPointer(unsigned int id);
         unsigned int countDeposits()const{return possesed_products.size();};
         unsigned int getUniqueIndex();
 

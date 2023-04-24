@@ -19,7 +19,6 @@ class Product
 
         // Methods
         void setCurrency(std::string currency);
-        void setId(int id);
 
         // Virtual methods
         virtual void setTerm(int term);
@@ -31,6 +30,7 @@ class Product
         unsigned int getId() const;
         std::string getCurrency() const;
         std::string getProductType() const;
+        void setId(int id);
 
         // Virtual methods
         virtual unsigned int getTerm() const;
