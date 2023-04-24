@@ -247,3 +247,78 @@ TEST_CASE("Test ShortTerm Deposit", "[ShortTermDeposit]")
         REQUIRE(deposit.getProductType() == "ShortTermDeposit");
     }
 }
+
+TEST_CASE("Test AdditiveDeposit", "[AdditiveDeposit]")
+{
+    AdditiveDeposit deposit(2000, 3.14, "PLN", 12, 1, 19);
+    SECTION("Test setters and getters", "[AdditiveDeposit]")
+    {
+        REQUIRE(deposit.getBalance() == 2000.0);
+        REQUIRE(deposit.getId() == 1);
+        REQUIRE(deposit.getCapitalGainsTax() == 19);
+        REQUIRE(deposit.getProductType() == "AdditiveDeposit");
+        REQUIRE(deposit.getRate() == 3.14);
+        REQUIRE(deposit.getTerm() == 12);
+    }
+    SECTION("Test calculating profits", "[AdditiveDeposit]")
+    {
+        deposit.addMoney(6, 1000);
+        REQUIRE(deposit.getBalance() == 3000);
+        REQUIRE(deposit.calculateProfit() == 63.59);
+    }
+    SECTION("Test calculating profits v2", "[AdditiveDeposit]")
+    {
+        deposit.addMoney(10, 6000);
+        REQUIRE(deposit.getBalance() == 8000);
+        REQUIRE(deposit.calculateProfit() == 76.30);
+    }
+}
+
+
+// Progressive Deposit
+
+TEST_CASE("Test ProgressiveDeposit", "[ProgressiveDeposit]")
+{
+    std::vector<bank_rate> rates;
+    rates.resize(12);
+    std::fill(rates.begin(), rates.end(), 3.14);
+    ProgressiveDeposit deposit(2000, rates, "PLN", 12, 1, 19);
+    SECTION("Test setters and getters", "[ProgressiveDeposit]")
+    {
+        REQUIRE(deposit.getBalance() == 2000);
+        REQUIRE(deposit.getCapitalGainsTax() == 19);
+        REQUIRE(deposit.getCurrency() == "PLN");
+        REQUIRE(deposit.getId() == 1);
+        REQUIRE(deposit.getProductType() == "ProgressiveDeposit");
+        REQUIRE(deposit.getTerm() == 12);
+        // Sprawdzić getRate
+    }
+
+    SECTION("Test creating ProgressiveDeposit with invalid values", "[ProgressiveDeposit]")
+    {
+        std::vector<bank_rate> too_many_rates = {1, 1, 1, 1, 3, 3, 3, 6, 6, 6, 9, 9, 9};
+        std::vector<bank_rate> valid_rates = {1, 1, 1, 1, 3, 3, 3, 6, 6, 6, 9, 9, 9};
+        std::vector<bank_rate> negative_rates = {1, -1, 1, 3, 3, 3, 6, 6, 6, 9, 9, 9};
+        REQUIRE_THROWS(ProgressiveDeposit(2000, too_many_rates, "PLN", 12, 1, 19));
+        REQUIRE_THROWS(ProgressiveDeposit(2000, negative_rates, "PLN", 12, 1, 19));
+        REQUIRE_THROWS(ProgressiveDeposit(-2000, valid_rates, "PLN", 12, 1, 19));
+        REQUIRE_THROWS(ProgressiveDeposit(2000, valid_rates, "PLN", 12, -1, 19));
+        REQUIRE_THROWS(ProgressiveDeposit(2000, valid_rates, "PLN", 12, 1, 120));
+        REQUIRE_THROWS(ProgressiveDeposit(2000, valid_rates, "PLN", 12, 1, -20));
+        REQUIRE_THROWS(ProgressiveDeposit(2000, valid_rates, "PLN", -5, 1, 19));
+        REQUIRE_THROWS(ProgressiveDeposit(2000, valid_rates, "PLN", 0, 1, 19));
+        REQUIRE_THROWS(ProgressiveDeposit(2000, valid_rates, "PLNNNN", 12, 1, 19));
+    }
+
+    SECTION("Test calculating profits", "[ProgressiveDeposit]")
+    {
+        ProgressiveDeposit deposit2(2000, rates, "PLN", 12, 1, 19);
+        REQUIRE(deposit2.calculateProfit() == 50.87);
+    }
+    SECTION("Test calculating profits with increasing rates", "[ProgressiveDeposit]")
+    {
+        std::vector<bank_rate> rates = {1, 1, 1, 3, 3, 3, 6, 6, 6, 9, 9, 9};
+        ProgressiveDeposit deposit2(2000, rates, "PLN", 12, 1, 19);
+        REQUIRE(deposit2.calculateProfit() == 76.95);
+    }
+}

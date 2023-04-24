@@ -61,6 +61,13 @@ class InvalidCapitalGainsTaxValueError: public BaseException
     public:
         InvalidCapitalGainsTaxValueError(const std::string &message): BaseException(message){};
 };
+
+class InvalidRatesCoefficientsNumberError: public BaseException
+{
+    public:
+            InvalidRatesCoefficientsNumberError(const std::string &message): BaseException(message){};
+};
+
 // Deposit
 
 class ProductsInvalidIndexError: public BaseException

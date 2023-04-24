@@ -59,8 +59,8 @@ class Deposit: public Product
 
 
         // Operators
-        bool operator==(const Deposit &d) const;
-        bool operator!=(const Deposit &d) const;
+        virtual bool operator==(const Deposit &d) const;
+        virtual bool operator!=(const Deposit &d) const;
         friend std::ostream& operator<<(std::ostream& os, const Deposit &d);
 
 };
@@ -90,8 +90,6 @@ class TraditionalDeposit: public Deposit
 
 class CurrencyDeposit: public TraditionalDeposit
 {
-    private:
-        //virtual void print(std::ostream &os) const override;
     public:
         CurrencyDeposit(){};
         CurrencyDeposit(double balance, bank_rate rate, std::string currency, int term_months, int id, int capital_gains_tax): TraditionalDeposit(balance, rate, currency, term_months, id, capital_gains_tax){this->product_type="CurrencyDeposit";}
@@ -105,12 +103,7 @@ class AdditiveDeposit: public TraditionalDeposit
         std::vector<double> added_money;
     public:
         AdditiveDeposit(){};
-        AdditiveDeposit(double balance, bank_rate rate, std::string currency, int term_months, int id, int capital_gains_tax): TraditionalDeposit(balance, rate, currency, term_months, id, capital_gains_tax)
-        {
-            this->product_type="AdditiveDeposit";
-            added_money.reserve(term_months);
-            std::fill(added_money.begin(), added_money.end(), 0.0);
-        }
+        AdditiveDeposit(double balance, bank_rate rate, std::string currency, int term_months, int id, int capital_gains_tax);
         double calculateProfit() const override;
         void addMoney(int addition_month, double amount);
 };
@@ -118,13 +111,13 @@ class AdditiveDeposit: public TraditionalDeposit
 class ProgressiveDeposit: public Deposit
 {
     private:
+        using Deposit::getRate;
         std::vector<bank_rate> rate_coefficients;
         void print(std::ostream &os) const override;
     public:
         ProgressiveDeposit(){};
         ProgressiveDeposit(double balance, std::vector<bank_rate> rate_coefficients, std::string currency, int term_months, int id, int capital_gains_tax);
         double calculateProfit() const override;
-        //unsigned int getTerm() const override;
         void setRate(std::vector<bank_rate> rate_coefficients);
         virtual void saveToFile(std::ostream &os) const override;
 };

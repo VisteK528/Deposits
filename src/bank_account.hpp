@@ -37,7 +37,6 @@ class BankAccount
         std::string getSurname() const;
         std::chrono::year_month_day getBirthDate() const;
         std::string getBirthDateString() const;
-        void addDeposit(double balance, bank_rate rate, std::string currency, int term_months, int capital_gains_tax);
         template<class T>
         void addDeposit(const T &t)
         {

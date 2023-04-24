@@ -207,6 +207,14 @@ void CurrencyDeposit::convert(std::string currency, bank_rate exchange_rate)
 
 // Additive deposit
 
+AdditiveDeposit::AdditiveDeposit(double balance, bank_rate rate, std::string currency, int term_months, int id, int capital_gains_tax): TraditionalDeposit(balance, rate, currency, term_months, id, capital_gains_tax)
+{
+    this->product_type="AdditiveDeposit";
+    this->added_money.reserve(term_months);
+    this->added_money.resize(term_months);
+    std::fill(this->added_money.begin(), this->added_money.end(), 0.0);
+}
+
 void AdditiveDeposit::addMoney(int month, double amount)
 {
     if(month < 0)
@@ -222,20 +230,23 @@ void AdditiveDeposit::addMoney(int month, double amount)
     {
         throw InvalidAddMoneyAmountError("Cannot add negative amount of money to the deposit!");
     }
-    overall_added += amount*100;
-    std::fill(added_money.begin()+month, added_money.end(), amount*100);
+    unsigned int integer_added = amount*100;
+    balance += integer_added;
+    overall_added += integer_added;
+    std::fill(added_money.begin()+month, added_money.end(), integer_added);
 }
 
 double AdditiveDeposit::calculateProfit() const
 {
+    unsigned int integer_profit = 0;
     double profit = 0;
     double tax = (100-capital_gains_tax)/100.;
     for(double money: added_money)
     {
-        profit += (balance-overall_added+money*100)*(1/12.)*rate;
+        profit += (balance - overall_added + money)*(1/12.)*rate;
     }
-    double new_balance = balance/100. + profit*tax;
-    return new_balance;
+    integer_profit = (int)round(profit*tax/1000000);
+    return (double)integer_profit/100;
 }
 
 // Progressive deposit
@@ -254,11 +265,21 @@ ProgressiveDeposit::ProgressiveDeposit(double balance, std::vector<bank_rate> ra
     setRate(rate_coefficients);
     setId(id);
     setCapitalGainsTax(capital_gains_tax);
+    if(rate_coefficients.size() != term_months)
+    {
+        throw InvalidRatesCoefficientsNumberError("Number of rate coefficients must match the term in months!");    }
     this->product_type = "ProgressiveDeposit";
 }
 
 void ProgressiveDeposit::setRate(std::vector<bank_rate> rate_coefficients)
 {
+    for(auto rate: rate_coefficients)
+    {
+        if(rate < 0)
+        {
+            throw InvalidRateValueError("Rate cannot be negative!");
+        }
+    }
     this->rate_coefficients = rate_coefficients;
 }
 
@@ -294,14 +315,15 @@ void ProgressiveDeposit::print(std::ostream &os) const
 
 double ProgressiveDeposit::calculateProfit() const
 {
+    unsigned int integer_profit = 0;
     double profit = 0;
     double tax = (100-capital_gains_tax)/100.;
     for(bank_rate month_rate: rate_coefficients)
     {
         profit += balance*(1/12.)*month_rate;
     }
-    double new_balance = balance/100. + profit*tax;
-    return new_balance;
+    integer_profit = (int)round(profit*tax/100);
+    return (double)integer_profit/100;
 }
 
 // ShortTerm deposit
