@@ -25,6 +25,7 @@ W tym zadaniu zdecydowałem się na dalszą modyfikację zadania 2. Jednakże ze
 4. Zmiany w pliku `main.cpp` umożliwiające podawanie różnych zestawów danych w celu tworzenia różnych typów lokat
 5. Reorganizacja i napisanie nowych testów dla nowych klas powstałych w ramach zadania 4
 6. Implementacja w nowej formie metod `void saveToFile` umożliwiających zapis klasy do strumienia oraz implementacja metod w klasie `DepositFactory` umożliwiających stworzenie obiektu i zwrócenie go na podstawie strumienia wejściowego.
+7. Stworzono nową klasę `Interface`w celu "ogarnięcia" obsługi użytkownika, która mocno się rozrosła w tym zadaniu.
 
 Poniżej przestawiam schemat klas, który próbowałem stworzyć w UML
 ![image](untitled_workspace.png)

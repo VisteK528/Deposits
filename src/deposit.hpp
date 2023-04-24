@@ -7,31 +7,6 @@
 #include <sstream>
 #include <algorithm>
 
-/*
-
-Rodzaje lokat i przedmiotow finansowych
-
-Klasa bazowa:
-1. Product - dziedziczą po niej klasy Deposit oraz potencjalnie klasa Loan
-
-Klasy Deposit:
-1. Deposit - klasa bazowa lokat
-1.1. Traditional Deposit - lokata tradycyjna
-1.1.1. Lokata walutowa - lokata tradycyjna z możliwością ustawienia waluty na inną niż bazowa plus z możliwością przewalutowywania
-1.2. Dynamic Deposit - lokata z dynamicznie zmieniającym się oprocentowaniem
-1.2.1 Progressive Deposit - lokata z progresywnie narastającym oprocentowaniem
-1.2.2 Degressive Deposit - lokata z sukcesywnie zmniejszającym się oprocentowaniem
-1.3. OneDayDeposit - lokata jednodniowa, nie podlega podatkowi Belki
-1.3.1 OvernightDeposit - lokata nocna, trwa 12h
-
-*/
-
-/*
-Lokata progresywna działanie
-
-
-*/
-
 typedef double bank_rate;
 
 class Deposit: public Product

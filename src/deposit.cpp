@@ -1,38 +1,5 @@
 #include "deposit.hpp"
 
-// Deposit::Deposit(const std::istream &is)
-// {
-//     std::stringstream input;
-//     input << is.rdbuf();
-//     std::vector<std::string> arguments;
-//     while (input.good())
-//     {
-//         std::string argument;
-//         getline(input, argument, ',');
-//         argument.erase(std::remove_if(argument.begin(), argument.end(), isspace), argument.end());
-//         arguments.push_back(argument);
-//     }
-//     int id = std::stoi(arguments[0]);
-//     double balance = std::stod(arguments[1]);
-//     std::string currency = arguments[2];
-//     bank_rate rate = std::stod(arguments[3]);
-//     int term_months = std::stoi(arguments[4]);
-//     int capital_gains_tax = std::stoi(arguments[5]);
-//     if(balance < 0)
-//     {
-//         throw InvalidBalanceInputValueError("Balance value cannot be negative!");
-//     }
-//     else
-//     {
-//         this->balance = balance*100;
-//     }
-//     setCurrency(currency);
-//     setRate(rate);
-//     setTerm(term_months);
-//     setId(id);
-//     setCapitalGainsTax(capital_gains_tax);
-// }
-
 bank_rate Deposit::getRate() const
 {
     return this->rate/10000;
@@ -300,7 +267,7 @@ ProgressiveDeposit::ProgressiveDeposit(double balance, std::vector<bank_rate> ra
     setRate(rate_coefficients);
     setId(id);
     setCapitalGainsTax(capital_gains_tax);
-    if(rate_coefficients.size() != term_months)
+    if(rate_coefficients.size() != abs(term_months))
     {
         throw InvalidRatesCoefficientsNumberError("Number of rate coefficients must match the term in months!");    }
     this->product_type = "ProgressiveDeposit";

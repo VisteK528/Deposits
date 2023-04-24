@@ -2,7 +2,7 @@
 #define FACTORY_HPP
 
 #include "deposit.hpp"
-
+#include <memory>
 typedef enum {TRADITIONAL=1, CURRENCY=2, ADDITIVE=3, PROGRESSIVE=4, SHORTTERM=5} DEPOSITS;
 
 class DepositFactory
