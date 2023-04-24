@@ -1,28 +1,29 @@
-# Zmiany wprowadzone w programie w zadaniu 3
+# Zadanie 4
+W tym zadaniu zdecydowałem się na dalszą modyfikację zadania 2. Jednakże ze względu na wymóg wykorzystania polimorfizmu, inteligentnych wskaźników oraz wybranego wzorca projektowego mój program przeszedł wiele zmian, głównie struktutalnych.
 
-1. Dodano obsługę podatek od zysków kapitałowych (tzw. podatek Belki)
-2. Dodano ```const``` tam gdzie się dało
-3. Dodano przeciążenie ```operator==``` oraz ```operator!=``` dla klasy Deposit
-4. Dodano przeciążenie ```operator<<``` dla klasy BankAccount
-5. Dodano przyjmowanie argumentu ```capital_gains_tax```, wyrażonego jako typ ```int``` (w procentach), wraz z wywołaniem programu
-6. Dodano możliwość zapisu stanu obiektu klasy ```Deposit``` do pliku oraz odczyt z pliku i stworzenie na jego podstawie obiekt klasy ```Deposit```
-    - Zapis i odczyt do pliku z rozszerzeniem ```.csv``` lub ```.txt```, zgodnie z kolejnością:
-    ```csv
-    id, balance, currency, rate, term_months, capital_gains_tax,
-    ```
-    - Zapis do pliku za pomocą funkcji zaprzyjaźnionej
-    ```cpp
-    friend void saveToFile(std::ostream &os, const Deposit &d);
-    ```
-    - Odczyt i inicjalizacja za pomocą specjalnego konstruktora
-    ```cpp
-    Deposit(const std::istream &is);
-    ```
-7. Zmieniono przechowywanie daty jako stringa na przechowywanie obiektu nowej klasy `year_month_date`
-    - Zdecydowałem się na stworzenie oddzielnej klasy, ponieważ orginalna klasa ```year_month_date``` z biblioteki ```std::chrono``` nie wspiera w obecnej chwili operatora ```operator<<```, a także nie jest możliwa w łatwy sposób konwersja tego typu na obiekt klasy ```std::string```. Możliwość łatwego wyprowadznia zawartości obiektu klasy ```year_month_date``` jest określona jako wspierana od standardu ```since c++20```, aczkolwiek zakładam, że w rzeczywistości stanie się to częścią biblioteki standardowej wraz ze standardem c++23. W moich plikach biblioteki ```std::chrono``` operatory ```operator<<``` oraz metody ```to_stream```, ```from_stream``` są określone w pliku jako "//TODO"
-    - Moja klasa year_month_date enkapsuluje obiekt klasy ```year_month_date```, wspiera konwersję do obiektu ```std::string``` oraz posiada przeciążenie operatora ```operator<<```
-8. Dodano nowe wyjątki obsługujące zmiany w programie
-9. Dodano nowe testy jednostkowe sprawdzajace zmiany wprowadzone w programie
-10. Zmieniono typ ```term_months``` z ```unsigned int``` na ```std::chrono::months```
+1. Przede wszystkim zamiast pojedyńczej klasy `Deposit` posiadającej wiele różnych metod, wydzieliłem z niej abstrakcyjną klasę bazową `Product`. Zrobiłem to z myślą o integracji możliwości integracji mojego systemu oraz klasy/klas `Loan` tworzonych w ramach 2 zadania przez innych. Wracając jednak do lokat, stworzyłem dla nich klasę bazową `Deposit` oraz 5 klas specjalistycznych.
+    1. `TraditionalDeposit` - podstawowa klasa reprezentujaca lokatę tradycyjną ze stałym oprocentowaniem
+        * `CurrencyDeposit` - względem lokaty tradycyjnej posiada możliwość tworzenia lokat w innych walutach oraz przewalutowywanie
+        * `AdditiveDeposit` - względem lokaty tradycyjnej posiada możliwość wpłacenia dodatkowych środków w określonym terminie
+    2. `ProgressiveDeposit` - lokata progresywna ze zmiennym oprocentowaniem, posiada minimalny czas trwania lokaty
+    3. `ShortTermDeposit` - lokata krótkoterminowa ze stałym oprocentowaniem, skierowana głównie do instytucji, posiada wyższą kwotę minimalną oraz nie obowiązuje dla niej podatek od zysków kapitałowych (tzw. podatek Belki). W rzeczywistości ta luka prawna została już usunięta, jednak na potrzeby zadania stwierdziłem, że może ciekawie urozmaicić projekt.
 
+2. Stworzyłem klasę `DepositFactory`, która realizuje strukturalny wzorzec projektowy "Fabryka" tworząc na bazie podanych parametrów odpowiednie obiekty, realizuje regułę Single Responsibility Principle z SOLID
+3. Zmodyfikowałem klasę `BankAccount`
+    * Przechowywany jest inteligentny wskaźnik (`std::shared_ptr`) do odpowiedniego obiektu klasy `Deposit`
+    * Wykorzystałem szablony, aby zamiast tworzyć szereg metod `addDeposit` dla każdego typu obiektu oddzielnie robił to za mnie kompilator. Zwiększa to przejrzystość kodu oraz realizuje regułę DRY
+    ```cpp
+    template<class T>
+        void addDeposit(std::shared_ptr<T> t)
+        {
+            possesed_products.push_back(t);
+        }
+    ```
+    * Dla wykorzystania metod takich jak `convert()` lub `addMoney()` wykorzystałem dynamiczne rzutowanie wskaźnika obiektu przechowywanego jako wskaźnik do klasy bazowej na wskaźnik do rzeczywistej klasy obiektu, umożliwiając korzystanie z wyżej wymienionych metod.
+    * Inne zmiany w klasie `BankAccount` w celu przystosowania jej do zmian w projekcie
+4. Zmiany w pliku `main.cpp` umożliwiające podawanie różnych zestawów danych w celu tworzenia różnych typów lokat
+5. Reorganizacja i napisanie nowych testów dla nowych klas powstałych w ramach zadania.5
+
+Poniżej przestawiam schemat klas, który próbowałem stworzyć w UML
+![image](untitled_workspace.png)
 

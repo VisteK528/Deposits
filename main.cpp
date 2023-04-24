@@ -75,15 +75,17 @@ int main(int argc, char* argv[])
     BankAccount account(name, surname, birth_date);
     DepositFactory factory;
 
-    TraditionalDeposit deposit(972.71, 3.14, "PLN", 6, 1, 19);
-    CurrencyDeposit currency(1410.43, 3.14, "EUR", 6, 2, 19);
+    const int index1 = account.getUniqueIndex();
+    const int index2 = account.getUniqueIndex();
+    const int index3 = account.getUniqueIndex();
+    const int index4 = account.getUniqueIndex();
 
-
-    account.addDeposit(deposit);
-    account.addDeposit(currency);
-    account.addDeposit(1364.12, 2.71, "PLN", 6, 19);
-    account.addDeposit(1410.43, 3.14, "PLN", 6, 19);
-    account.addDeposit(1945.01, 3.14, "PLN", 6, 19);
+    account.addDeposit(factory.createTraditionalDeposit(TRADITIONAL, 972.71, 3.14, "PLN", 6, index1, 19));
+    account.addDeposit(factory.createTraditionalDeposit(CURRENCY, 1410.43, 3.14, "EUR", 6, index2, 19));
+    account.addDeposit(factory.createTraditionalDeposit(TRADITIONAL, 1364.12, 2.71, "PLN", 6, index3, 19));
+    account.addDeposit(factory.createProgressiveDeposit(2000, {3.14, 3.14, 3.14, 3.14, 3.14, 3.14}, "PLN", 6, index4, 19));
+    // account.addDeposit(1410.43, 3.14, "PLN", 6, 19);
+    // account.addDeposit(1945.01, 3.14, "PLN", 6, 19);
 
     std::cout<<"Hello, "<< account.getName() <<' '<<account.getSurname()<<'!'<<std::endl;
     std::cout<<"Thank you for choosing PROI Financial Services©!"<<std::endl;
