@@ -36,6 +36,21 @@ class BankAccount
         std::string getSurname() const;
         std::chrono::year_month_day getBirthDate() const;
         std::string getBirthDateString() const;
+        void removeDeposit(unsigned int id);
+        void setDepositRate(unsigned int id, bank_rate rate);
+        void setDepositRate(unsigned int id, std::vector<bank_rate> rates);
+        void convertDeposit(unsigned int id, std::string currency_symbol, bank_rate exchange_rate);
+        void addMoneyToDeposit(unsigned int id, int addition_month, double amount);
+        const Deposit& findDeposit(unsigned int id);
+        std::vector<std::shared_ptr<Deposit>> getDeposits() const;
+        std::shared_ptr<Deposit> findDepositPointer(unsigned int id);
+        unsigned int countDeposits()const{return possesed_products.size();};
+        unsigned int getUniqueIndex();
+
+        //Operator overloading
+        friend std::ostream& operator<<(std::ostream &os, const BankAccount &b);
+
+        //Templates
         template<class T>
         void addDeposit(const T &t)
         {
@@ -48,17 +63,6 @@ class BankAccount
             t->setId(getUniqueIndex());
             possesed_products.push_back(t);
         }
-        void removeDeposit(unsigned int id);
-        void setDepositRate(unsigned int id, bank_rate rate);
-        void convertDeposit(unsigned int id, std::string currency_symbol, bank_rate exchange_rate);
-        const Deposit& findDeposit(unsigned int id);
-        std::vector<std::shared_ptr<Deposit>> getDeposits() const;
-        std::shared_ptr<Deposit> findDepositPointer(unsigned int id);
-        unsigned int countDeposits()const{return possesed_products.size();};
-        unsigned int getUniqueIndex();
-
-        //Operator overloading
-        friend std::ostream& operator<<(std::ostream &os, const BankAccount &b);
 };
 
 

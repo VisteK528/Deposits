@@ -122,14 +122,37 @@ void BankAccount::setDepositRate(unsigned int id, bank_rate rate)
     d.setRate(rate);
 }
 
+void BankAccount::setDepositRate(unsigned int id, std::vector<bank_rate> rates)
+{
+    std::shared_ptr<Deposit> deposit = findDepositPointer(id);
+    if(deposit->getProductType() != "ProgressiveDeposit")
+    {
+        throw IncompatibleDepositTypeError("Deposit with given ID is not compatible with this operation!");
+    }
+    std::shared_ptr<ProgressiveDeposit> progressive_deposit = std::dynamic_pointer_cast<ProgressiveDeposit>(deposit);
+    progressive_deposit->setRate(rates);
+}
+
+void BankAccount::addMoneyToDeposit(unsigned int id, int addition_month, double amount)
+{
+    std::shared_ptr<Deposit> deposit = findDepositPointer(id);
+    if(deposit->getProductType() != "AdditiveDeposit")
+    {
+        throw IncompatibleDepositTypeError("Deposit with given ID is not compatible with this operation!");
+    }
+    std::shared_ptr<AdditiveDeposit> additive_deposit = std::dynamic_pointer_cast<AdditiveDeposit>(deposit);
+    additive_deposit->addMoney(addition_month, amount);
+}
+
 void BankAccount::convertDeposit(unsigned int id, std::string currency_symbol, bank_rate exchange_rate)
 {
-    std::shared_ptr<Deposit> d = findDepositPointer(id);
-    if(d->getProductType() == "CurrencyDeposit")
+    std::shared_ptr<Deposit> deposit = findDepositPointer(id);
+    if(deposit->getProductType() != "CurrencyDeposit")
     {
-        std::shared_ptr<CurrencyDeposit> c = std::dynamic_pointer_cast<CurrencyDeposit>(d);
-        c->convert(currency_symbol, exchange_rate);
+        throw IncompatibleDepositTypeError("Deposit with given ID is not compatible with this operation!");
     }
+    std::shared_ptr<CurrencyDeposit> c = std::dynamic_pointer_cast<CurrencyDeposit>(deposit);
+    c->convert(currency_symbol, exchange_rate);
 }
 
 std::ostream& operator<<(std::ostream &os, const BankAccount &b)

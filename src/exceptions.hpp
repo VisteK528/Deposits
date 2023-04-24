@@ -76,6 +76,12 @@ class ProductsInvalidIndexError: public BaseException
         ProductsInvalidIndexError(const std::string &message): BaseException(message){};
 };
 
+class IncompatibleDepositTypeError: public BaseException
+{
+    public:
+        IncompatibleDepositTypeError(const std::string &message): BaseException(message){};
+};
+
 
 // BankAccount
 
